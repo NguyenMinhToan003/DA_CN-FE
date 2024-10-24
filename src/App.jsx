@@ -1,10 +1,11 @@
-import Button from '@mui/material/Button'
 import Container from '@mui/material/Container'
+import AppRouter from './routers/AppRouter'
+import './App.css'
 const App = () => {
   return (
-    <Container disableGutters maxWidth={false} sx={{ backgroundColor: '#f0f2f5' }}>
-      <Button variant="contained" color="primary">Hello World</Button>
+    <Container disableGutters maxWidth={false} sx={{ backgroundColor: 'background.default' }}>
+      <AppRouter />
     </Container>
   )
 }
-export default App;
+export default App
