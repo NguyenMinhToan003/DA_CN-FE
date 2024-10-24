@@ -1,0 +1,9 @@
+.navLink {
+    display: inline-block;
+    color:inherit;
+    width: 100%;
+}
+.active{
+    
+}
+input { outline: none; border: none; }
