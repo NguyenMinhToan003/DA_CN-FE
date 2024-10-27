@@ -11,12 +11,10 @@ import Avatar from '@mui/material/Avatar'
 import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
 import { socket } from '~/socket'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import CloseIcon from '@mui/icons-material/Close'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
-import ReplyIcon from '@mui/icons-material/Reply'
-import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt'
+import theme from '~/theme'
 import { InputBase } from '@mui/material'
 const Chat = () => {
   const profile = {
@@ -25,15 +23,16 @@ const Chat = () => {
     name: 'Nguyễn Văn A'
   }
   const [key, setKey] = useState('')
+  const [roomchat, setRoomchat] = useState({})
   const { id } = useParams()
   const navigate = useNavigate()
-  const roomchat = {
+  const originChat = {
     _id: '1',
     room_name: 'Đồ án công nghệ phần',
     messages: [
       {
         _id: '1',
-        message: 'hello',
+        message: 'hello here',
         sender_id: '1',
         sender: {
           _id: '1',
@@ -43,8 +42,8 @@ const Chat = () => {
         status: 'sent'
       },
       {
-        _id: '2',
-        message: 'hi there',
+        _id: '1',
+        message: 'You grid Material ui CopilotMaterial- UI(MUI) is a popular React UI library that implements Googles Material Design1.Thegrid system in MUI is flexible and responsive, adapting to different screen sizes and orientations2',
         sender_id: '2',
         sender: {
           _id: '2',
@@ -52,18 +51,57 @@ const Chat = () => {
           name: 'Nguyễn Văn A'
         },
         status: 'sent'
-      },
+      }
     ]
   }
-  const [chat, setChat] = useState('')
+  const fetchRoomChat = async () => {
+    setRoomchat(originChat)
+  }
+  useEffect(() => {
+    fetchRoomChat()
+  }, [])
+  const handleSendMessage = () => {
+    setKey('')
+    socket.emit('chat_message', { key })
+  }
+  useEffect(() => {
+    socket.on('chat_message', (msg) => {
+      setRoomchat((prev) => {
+        return {
+          ...prev,
+          messages: [...prev.messages, {
+            _id: '1',
+            message: msg.key,
+            sender_id: '1',
+            sender: {
+              _id: '1',
+              profile_picture: 'https://i.pravatar.cc/300',
+              name: 'Nguyễn Văn A'
+            },
+            status: 'sent'
+          }]
+        }
+      })
+    })
+  }, [])
   const [loading, setLoading] = useState(false)
   const [openMenuRoom, setOpenMenuRoom] = useState(false)
-
   return (
     <>
 
-      <Box sx={{ paddingX: 2, paddingY: 1, backgroundColor: 'background.default', height: '100vh' }}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', backgroundColor: 'secondary.main', height: '100%', borderRadius: 3 }}>
+      <Box sx={{
+        paddingX: 2,
+        paddingY: 1,
+        backgroundColor: 'background.default',
+        height: `calc(100vh - ${theme.Layout.headerHeight}px)`
+      }}>
+        <Box sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          backgroundColor: 'secondary.main',
+          height: '100%',
+          borderRadius: 3
+        }}>
           <Box
             sx={{
               display: 'flex',
@@ -89,7 +127,7 @@ const Chat = () => {
               </Tooltip>
               <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1 }}>
                 <Avatar />
-                <Typography variant="body1">{roomchat?.room_name}</Typography>
+                <Typography >{roomchat?.room_name}</Typography>
               </Box>
             </Box>
             <Tooltip title="More">
@@ -129,25 +167,28 @@ const Chat = () => {
                     {data.sender._id !== profile._id && (
                       <Avatar
                         src={data.sender.profile_picture}
-                        sx={{ width: '36px', height: '36px' }}
+                        sx={{ width: 36, height: 36 }}
                       />
                     )}
                     <Typography
-                      variant='body1'
                       sx={{
-                        wordBreak: 'break-word',
-                        lineHeight: '1.5',
-                        letterSpacing: '0.6px',
                         maxWidth: '70%',
                         backgroundColor:
-                          data.status === 'deleted' ? 'error.light' : data.sender._id === profile._id ? 'messages.bg_primary' : 'messages.bg_secondary',
+                          data.sender._id === profile._id
+                            ? 'messages.bg_primary'
+                            : 'messages.bg_secondary',
                         color:
-                          data.status === 'deleted' ? 'messages.text_primary' :
-                            data.sender._id === profile._id ? 'messages.text_primary' : 'messages.text_secondary',
-                        borderRadius: 6,
-                        padding: '10px 15px',
-                        fontSize: '15px',
-                        fontweight: '50'
+                          data.sender._id === profile._id
+                            ? 'messages.text_primary'
+                            : 'messages.text_secondary',
+                        fontWeight: 500,
+                        fontSize: '1.0625rem',
+                        lineHeight: '1.625rem',
+                        borderRadius: 5,
+                        padding: '0.75rem 1.25rem',
+                        whiteSpace: 'pre-wrap',
+                        overflowWrap: 'break-word',
+                        height: 'fit-content'
                       }}
                     >
                       {data.message}
@@ -228,6 +269,7 @@ const Chat = () => {
                   width: '100%',
                   height: '100%',
                   outline: 'none',
+                  color: 'text.main',
                   fontSize: '1rem',
                   borderRadius: '50px',
                   paddingLeft: 2
@@ -241,8 +283,8 @@ const Chat = () => {
                   </IconButton>
                 )
               }
-              <Tooltip title="Send">
-                <IconButton color="info" >
+              <Tooltip title='Send'>
+                <IconButton color='info' onClick={handleSendMessage}>
                   <SendIcon />
                 </IconButton>
               </Tooltip>

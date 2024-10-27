@@ -1,7 +1,8 @@
 import Button from '@mui/material/Button'
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined'
 import { Typography } from '@mui/material'
-const Dashboard = () => {
+import theme from '../../theme'
+const Dashboard = ({ widthNav }) => {
   return (
     <Button
       variant='text'
@@ -10,9 +11,11 @@ const Dashboard = () => {
         display: 'flex',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        padding: 3,
+        paddingX: 3,
+        paddingY: 2,
         width: '100%',
-        borderRadius: 2,
+        borderRadius: 1,
+        transition: 'width 0.3s ease',
         color: 'secondary.more',
         backgroundColor: 'primary.more',
         ':hover': {
@@ -20,7 +23,9 @@ const Dashboard = () => {
         }
       }}
     >
-      <Typography variant='body1'>Dashboard</Typography>
+      {
+        widthNav === theme.Layout.navWidth && <Typography variant='body1'>Dashboard</Typography>
+      }
     </Button>
   )
 }
