@@ -1,17 +1,30 @@
+import { Grid, Box } from '@mui/material'
 import Roomchat from './Roomchat'
-import Box from '@mui/material/Box'
-const Chats = () => {
-  return (
-    <>
-      <Box sx={{ width: '100%', display: 'flex', gap: 1, padding: 2, flexDirection: 'column' }}>
-        <Roomchat />
-        <Roomchat />
-        <Roomchat />
-        <Roomchat />
-        <Roomchat />
-        <Roomchat />
-      </Box>
-    </>
-  )
+const Roomchats = () => {
+  return <>
+    <Box>
+      <Grid container spacing={3} sx={{ padding: 2 }} >
+        <Grid item xs={12} md={6} lg={4} xl={3} >
+          <Roomchat />
+        </Grid>
+        <Grid item xs={12} md={6} lg={4} xl={3} >
+          <Roomchat />
+        </Grid>
+        <Grid item xs={12} md={6} lg={4} xl={3} >
+          <Roomchat />
+        </Grid>
+        <Grid item xs={12} md={6} lg={4} xl={3} >
+          <Roomchat />
+        </Grid>
+        <Grid item xs={12} md={6} lg={4} xl={3} >
+          <Roomchat />
+        </Grid>
+        <Grid item xs={12} md={6} lg={4} xl={3} >
+          <Roomchat />
+        </Grid>
+
+      </Grid>
+    </Box>
+  </>
 }
-export default Chats
+export default Roomchats

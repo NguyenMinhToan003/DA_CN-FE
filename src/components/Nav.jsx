@@ -5,37 +5,39 @@ import Profile from '~/components/menu/Profile'
 import Subject from '~/components/menu/Subject'
 import Resource from '~/components/menu/Resource'
 import Chat from '~/components/menu/Chat'
-import theme from '../theme'
+import theme from '~/theme'
 import { NavLink } from 'react-router-dom'
-const Nav = () => {
+const Nav = ({ widthNav }) => {
   return (
     <Box
       sx={{
-        width: theme.Layout.navWidth,
+        width: widthNav,
         backgroundColor: 'secondary.main',
-        minHeight: '100vh',
+        minHeight: `calc(100vh - ${theme.Layout.headerHeight}px)`,
+        maxHeight: '100%',
         padding: 1,
+        transition: 'width 0.3s ease',
         display: 'flex',
         flexDirection: 'column',
-        boxShadow: ' rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;',
         gap: 1
 
       }}
     >
+
       <NavLink to='/' className='navLink'>
-        <Dashboard />
+        <Dashboard widthNav={widthNav} />
       </NavLink>
       <NavLink to='/profile' className='navLink'>
-        <Profile />
+        <Profile widthNav={widthNav} />
       </NavLink>
       <NavLink to='/subjects' className='navLink'>
-        <Subject />
+        <Subject widthNav={widthNav} />
       </NavLink>
       <NavLink to='/resources' className='navLink'>
-        <Resource />
+        <Resource widthNav={widthNav} />
       </NavLink>
       <NavLink to='/roomchats' className='navLink'>
-        <Chat />
+        <Chat widthNav={widthNav} />
       </NavLink>
     </Box>
   )
