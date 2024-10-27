@@ -2,8 +2,8 @@ import { createTheme } from '@mui/material/styles'
 
 const theme = createTheme({
   Layout: {
-    headerHeight: 84,
-    navWidth: 400
+    headerHeight: 64,
+    navWidth: 350
   },
   colorSchemes: {
     light: {
@@ -26,8 +26,8 @@ const theme = createTheme({
         messages: {
           text_primary: '#3F7000',
           bg_primary: '#E0EDCD',
-          text_secondary: '#65676b',
-          bg_secondary: '#f7f8fa'
+          text_secondary: '#282523',
+          bg_secondary: '#fce2ca'
         }
       }
     },
@@ -49,19 +49,16 @@ const theme = createTheme({
           default: '#181e2b'
         },
         messages: {
-          text_primary: '#3F7000',
-          bg_primary: '#E0EDCD',
-          text_secondary: '#000000',
-          bg_secondary: '#ffffff'
+          text_primary: '#1d2439',
+          bg_primary: '#e7d4c5',
+          text_secondary: '#e7d4c5',
+          bg_secondary: '#1d2439'
         }
       }
     }
   },
   components: {
     MuiButton: {
-      defaultProps: {
-        variant: 'contained'
-      },
       styleOverrides: {
         root: {
           textTransform: 'none'
@@ -72,40 +69,16 @@ const theme = createTheme({
       styleOverrides: theme => ({
         body: {
           backgroundColor: theme.palette.background.default,
-          color: theme.palette.text.main,
-          fontWeight: 400
+          color: text => text.palette.text.main,
+          fontWeight: 200,
+          fontSize: '1rem',
+          fontFamily: 'Poppins , sans-serif'
         },
         a: {
           textDecoration: 'none',
           color: 'inherit'
         }
       })
-    }
-  },
-  typography: {
-    fontFamily: [
-      '-apple-system',
-      'BlinkMacSystemFont',
-      '"Segoe UI"',
-      'Roboto',
-      '"Helvetica Neue"',
-      'Arial',
-      'sans-serif',
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"'
-    ].join(','),
-    h1: {
-      fontSize: '2rem',
-      fontWeight: 500
-    },
-    h2: {
-      fontSize: '1.5rem',
-      fontWeight: 500
-    },
-    body1: {
-      fontSize: '1rem',
-      fontWeight: 'bold'
     }
   }
 })
