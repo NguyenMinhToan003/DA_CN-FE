@@ -16,6 +16,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import CloseIcon from '@mui/icons-material/Close'
 import theme from '~/theme'
 import { Button, InputBase } from '@mui/material'
+
 const Chat = () => {
   const profile = {
     _id: '1',

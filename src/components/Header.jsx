@@ -34,13 +34,16 @@ const Header = ({ toggleNav, widthNav }) => {
       padding: 2,
       zIndex: 1000
     }}>
+
       <Box sx={{ width: widthNav, display: 'flex', transition: 'transform 0.3s ease' }}>
+
         <Tooltip title='menu'>
           <IconButton onClick={toggleNav} sx={{ color: 'text.default' }}>
             <ArrowForwardIcon sx={{ transform: widthNav === theme.Layout.navWidth ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s ease' }} />
           </IconButton>
         </Tooltip>
       </Box>
+
       <Box sx={{
         width: '100%', display: 'flex', gap: 2, justifyContent: 'flex-end', alignItems: 'center'
       }}>
@@ -86,6 +89,7 @@ const Header = ({ toggleNav, widthNav }) => {
           <Typography sx={{
             ml: 2, color: 'text.default'
           }} >
+
             Nguyễn Minh Toàn
           </Typography>
           <Avatar sx={{ ml: 2 }} />

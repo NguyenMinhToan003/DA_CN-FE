@@ -7,7 +7,9 @@ import Resource from '~/components/menu/Resource'
 import Chat from '~/components/menu/Chat'
 import theme from '~/theme'
 import { NavLink } from 'react-router-dom'
+
 const Nav = ({ widthNav, isMobile }) => {
+
 
   return (
     <Box
@@ -15,15 +17,18 @@ const Nav = ({ widthNav, isMobile }) => {
         width: widthNav,
         backgroundColor: 'secondary.main',
         minHeight: `calc(100vh - ${theme.Layout.headerHeight}px)`,
+
         padding: 1,
         position: 'sticky',
         top: theme.Layout.headerHeight,
+
         transition: 'width 0.3s ease',
         display: 'flex',
         flexDirection: 'column',
         gap: 1
       }}
     >
+
       <NavLink to='/' className='navLink' >
         <Dashboard widthNav={widthNav} />
       </NavLink>
@@ -37,6 +42,7 @@ const Nav = ({ widthNav, isMobile }) => {
         <Resource widthNav={widthNav} />
       </NavLink>
       <NavLink to='/roomchats' className='navLink' >
+
         <Chat widthNav={widthNav} />
       </NavLink>
     </Box>

@@ -25,7 +25,6 @@ const Index = () => {
     setWidthNav(width)
     localStorage.setItem('widthNav', width)
   }
-
   return (
     <>
       <Header toggleNav={toggleNav} widthNav={widthNav} />

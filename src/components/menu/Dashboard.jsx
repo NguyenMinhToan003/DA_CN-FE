@@ -3,6 +3,7 @@ import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined'
 import { Typography } from '@mui/material'
 import theme from '~/theme'
 
+
 const Dashboard = ({ widthNav }) => {
   return (
     <Button
@@ -22,7 +23,6 @@ const Dashboard = ({ widthNav }) => {
           color: 'secondary.more',
           backgroundColor: 'primary.more'
         },
-
         ':hover': {
           backgroundColor: 'primary.more'
         }
