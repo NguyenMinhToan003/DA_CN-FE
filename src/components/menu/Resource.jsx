@@ -14,6 +14,10 @@ const Resource = ({ widthNav }) => {
         paddingY: 2,
         borderRadius: 1,
         width: '100%',
+        '.active &': {
+          color: 'secondary.more',
+          backgroundColor: 'primary.more'
+        },
         transition: 'width 0.3s ease',
         color: 'text.main',
         ':hover': {

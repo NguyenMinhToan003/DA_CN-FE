@@ -15,6 +15,10 @@ const Subject = ({ widthNav }) => {
         paddingX: 3,
         paddingY: 2,
         borderRadius: 1,
+        '.active &': {
+          color: 'secondary.more',
+          backgroundColor: 'primary.more'
+        },
         transition: 'width 0.3s ease',
         width: '100%',
         color: 'text.main',
