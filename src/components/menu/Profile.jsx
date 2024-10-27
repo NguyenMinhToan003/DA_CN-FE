@@ -1,7 +1,8 @@
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
-const Profile = () => {
+import theme from '../../theme'
+const Profile = ({ widthNav }) => {
   return (
     <Button
       variant='text'
@@ -10,16 +11,24 @@ const Profile = () => {
         display: 'flex',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        padding: 3,
-        borderRadius: 2,
+        paddingX: 3,
+        paddingY: 2,
+        borderRadius: 1,
         width: '100%',
+        '.active &': {
+          color: 'secondary.more',
+          backgroundColor: 'primary.more'
+        },
+        transition: 'width 0.3s ease',
         color: 'text.main',
         ':hover': {
           backgroundColor: 'primary.more'
         }
       }}
     >
-      <Typography sx={{ fontWeight: 600, fontSize: '17px' }}>Thông tin</Typography>
+      {
+        widthNav === theme.Layout.navWidth && <Typography>Thông tin</Typography>
+      }
     </Button>
   )
 }

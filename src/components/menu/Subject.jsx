@@ -1,7 +1,8 @@
 import DriveFileRenameOutlineOutlinedIcon from '@mui/icons-material/DriveFileRenameOutlineOutlined';
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
-const Subject = () => {
+import theme from '../../theme';
+const Subject = ({ widthNav }) => {
   return (
     <Button
       variant='text'
@@ -11,8 +12,14 @@ const Subject = () => {
         display: 'flex',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        padding: 3,
-        borderRadius: 2,
+        paddingX: 3,
+        paddingY: 2,
+        borderRadius: 1,
+        '.active &': {
+          color: 'secondary.more',
+          backgroundColor: 'primary.more'
+        },
+        transition: 'width 0.3s ease',
         width: '100%',
         color: 'text.main',
         ':hover': {
@@ -20,7 +27,9 @@ const Subject = () => {
         }
       }}
     >
-      <Typography sx={{ fontWeight: 600, fontSize: '17px' }}>Đăng kí đò án</Typography>
+      {
+        widthNav === theme.Layout.navWidth && <Typography >Đề tài</Typography>
+      }
     </Button>
   )
 }

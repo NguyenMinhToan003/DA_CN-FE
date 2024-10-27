@@ -1,6 +1,7 @@
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import { Button, Typography } from '@mui/material';
-const Resource = () => {
+import theme from '../../theme';
+const Resource = ({ widthNav }) => {
   return (
     <Button
       variant='text'
@@ -9,17 +10,25 @@ const Resource = () => {
         display: 'flex',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        padding: 3,
-        borderRadius: 2,
+        paddingX: 3,
+        paddingY: 2,
+        borderRadius: 1,
         width: '100%',
+        '.active &': {
+          color: 'secondary.more',
+          backgroundColor: 'primary.more'
+        },
+        transition: 'width 0.3s ease',
         color: 'text.main',
         ':hover': {
           backgroundColor: 'primary.more'
         }
       }}
     >
-      <Typography sx={{ fontWeight: 600, fontSize: '17px' }}>Tài liệu</Typography>
-    </Button>
+      {
+        widthNav === theme.Layout.navWidth && <Typography >Tài liệu</Typography>
+      }
+    </Button >
   )
 }
 export default Resource;

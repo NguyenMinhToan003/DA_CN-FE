@@ -5,37 +5,39 @@ import Profile from '~/components/menu/Profile'
 import Subject from '~/components/menu/Subject'
 import Resource from '~/components/menu/Resource'
 import Chat from '~/components/menu/Chat'
-import theme from '../theme'
+import theme from '~/theme'
 import { NavLink } from 'react-router-dom'
-const Nav = () => {
+const Nav = ({ widthNav, isMobile }) => {
+
   return (
     <Box
       sx={{
-        width: theme.Layout.navWidth,
+        width: widthNav,
         backgroundColor: 'secondary.main',
-        minHeight: '100vh',
+        minHeight: `calc(100vh - ${theme.Layout.headerHeight}px)`,
         padding: 1,
+        position: 'sticky',
+        top: theme.Layout.headerHeight,
+        transition: 'width 0.3s ease',
         display: 'flex',
         flexDirection: 'column',
-        boxShadow: ' rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;',
         gap: 1
-
       }}
     >
-      <NavLink to='/' className='navLink'>
-        <Dashboard />
+      <NavLink to='/' className='navLink' >
+        <Dashboard widthNav={widthNav} />
       </NavLink>
-      <NavLink to='/profile' className='navLink'>
-        <Profile />
+      <NavLink to='/profile' className='navLink' >
+        <Profile widthNav={widthNav} />
       </NavLink>
-      <NavLink to='/subjects' className='navLink'>
-        <Subject />
+      <NavLink to='/subjects' className='navLink' >
+        <Subject widthNav={widthNav} />
       </NavLink>
-      <NavLink to='/resources' className='navLink'>
-        <Resource />
+      <NavLink to='/resources' className='navLink' >
+        <Resource widthNav={widthNav} />
       </NavLink>
-      <NavLink to='/roomchats' className='navLink'>
-        <Chat />
+      <NavLink to='/roomchats' className='navLink' >
+        <Chat widthNav={widthNav} />
       </NavLink>
     </Box>
   )
