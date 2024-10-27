@@ -33,8 +33,8 @@ const Roomchat = () => {
       >
         <Box sx={{ height: '100%', padding: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
           <Avatar sx={{ width: 50, height: 50 }} />
-          <NavLink to={`/chat/${roomChat._id}`}>
-            <Typography sx={{ color: 'text.primary' }}>{roomChat.room_name}</Typography>
+          <NavLink to={`chat/${roomChat._id}`}>
+            <Typography sx={{ color: 'text.primary', transition: '.25 all ease-out', ':hover': { textDecoration: 'underline', color: randomColor } }}>{roomChat.room_name}</Typography>
           </NavLink>
         </Box>
         <Box

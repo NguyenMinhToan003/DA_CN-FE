@@ -1,7 +1,9 @@
 import Button from '@mui/material/Button'
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined'
 import { Typography } from '@mui/material'
-import theme from '../../theme'
+import theme from '~/theme'
+
+
 const Dashboard = ({ widthNav }) => {
   return (
     <Button
@@ -16,8 +18,11 @@ const Dashboard = ({ widthNav }) => {
         width: '100%',
         borderRadius: 1,
         transition: 'width 0.3s ease',
-        color: 'secondary.more',
-        backgroundColor: 'primary.more',
+        color: 'text.main',
+        '.active &': {
+          color: 'secondary.more',
+          backgroundColor: 'primary.more'
+        },
         ':hover': {
           backgroundColor: 'primary.more'
         }

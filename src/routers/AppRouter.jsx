@@ -14,7 +14,7 @@ const AppRouter = () => {
         <Route index element={<Home />} />
         <Route path='profile' element={<Profile />} />
         <Route path='roomchats' element={<Roomchats />} />
-        <Route path='chat/:id' element={<Chat />} />
+        <Route path='roomchats/chat/:id' element={<Chat />} />
         <Route path='*' element={<Home />} />
       </Route>
     </Routes>

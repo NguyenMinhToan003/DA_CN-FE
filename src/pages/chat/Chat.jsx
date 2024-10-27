@@ -15,7 +15,8 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import CloseIcon from '@mui/icons-material/Close'
 import theme from '~/theme'
-import { InputBase } from '@mui/material'
+import { Button, InputBase } from '@mui/material'
+
 const Chat = () => {
   const profile = {
     _id: '1',
@@ -90,7 +91,7 @@ const Chat = () => {
     <>
 
       <Box sx={{
-        paddingX: 2,
+        paddingX: 1,
         paddingY: 1,
         backgroundColor: 'background.default',
         height: `calc(100vh - ${theme.Layout.headerHeight}px)`
@@ -107,8 +108,8 @@ const Chat = () => {
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              height: '60px',
-              padding: '10px'
+              height: 60,
+              padding: 1
             }}
           >
             <Box
@@ -125,10 +126,11 @@ const Chat = () => {
                   <ArrowBackIcon />
                 </IconButton>
               </Tooltip>
-              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1 }}>
-                <Avatar />
-                <Typography >{roomchat?.room_name}</Typography>
-              </Box>
+              <Button
+                startIcon={<Avatar sx={{ width: 36, height: 36 }} />}
+              >
+                <Typography sx={{ color: 'text.primary', fontWeight: 'bold' }}>{roomchat?.room_name}</Typography>
+              </Button>
             </Box>
             <Tooltip title="More">
               <IconButton onClick={() => setOpenMenuRoom(true)}>

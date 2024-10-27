@@ -51,8 +51,8 @@ const theme = createTheme({
         messages: {
           text_primary: '#1d2439',
           bg_primary: '#e7d4c5',
-          text_secondary: '#e7d4c5',
-          bg_secondary: '#1d2439'
+          text_secondary: '#101524',
+          bg_secondary: '#E0EDCD'
         }
       }
     }

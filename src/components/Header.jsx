@@ -22,52 +22,74 @@ const Header = ({ toggleNav, widthNav }) => {
   }
   return (
     <Box sx={{
+      position: 'sticky',
+      top: 0,
+      left: 0,
+      right: 0,
       backgroundColor: 'primary.main',
       height: theme.Layout.headerHeight,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      padding: 2
+      padding: 2,
+      zIndex: 1000
     }}>
-      <Box>
+
+      <Box sx={{ width: widthNav, display: 'flex', transition: 'transform 0.3s ease' }}>
+
         <Tooltip title='menu'>
           <IconButton onClick={toggleNav} sx={{ color: 'text.default' }}>
             <ArrowForwardIcon sx={{ transform: widthNav === theme.Layout.navWidth ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s ease' }} />
           </IconButton>
         </Tooltip>
       </Box>
-      <Box sx={{ width: '100%', display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
-        <Box>
-          <Paper
-            sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
-          >
-            <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
-              <SearchIcon />
-            </IconButton>
-            <InputBase
-              ref={refSearch}
-              value={key}
-              onChange={(e) => setKey(e.target.value)}
-              sx={{ ml: 1, flex: 1 }}
-              placeholder='Tìm mã sinh viên'
 
-            />
-            {
-              <IconButton
-                onClick={() => setKey('')}
-                color='error'
-                sx={{ display: key ? 'flex' : 'none' }}
-              >
-                <CloseIcon />
-              </IconButton>
+      <Box sx={{
+        width: '100%', display: 'flex', gap: 2, justifyContent: 'flex-end', alignItems: 'center'
+      }}>
+
+        <Paper
+          sx={{
+            p: '2px 4px', display: 'flex', alignItems: 'center', width: {
+              sm: '100%',
+              lg: 400
             }
-            <Button variant='contained' color='primary' onClick={handleSearch}>Tìm kiếm</Button>
+          }}
+        >
+          <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
+            <SearchIcon />
+          </IconButton>
+          <InputBase
+            ref={refSearch}
+            value={key}
+            onChange={(e) => setKey(e.target.value)}
+            sx={{
+              ml: 1, flex: 1,
+            }}
+            placeholder='Tìm mã sinh viên'
 
-          </Paper>
-        </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+          />
+          {
+            <IconButton
+              onClick={() => setKey('')}
+              color='error'
+              sx={{ display: key ? 'flex' : 'none' }}
+            >
+              <CloseIcon />
+            </IconButton>
+          }
+          <Button variant='contained' color='primary' onClick={handleSearch}>Tìm kiếm</Button>
+
+        </Paper>
+
+        <Box sx={{
+          display: 'flex', justifyContent: 'flex-end', alignItems: 'center'
+        }}>
           <ThemeMode />
-          <Typography sx={{ ml: 2, color: 'text.default' }} variant='body1'>
+          <Typography sx={{
+            ml: 2, color: 'text.default'
+          }} >
+
             Nguyễn Minh Toàn
           </Typography>
           <Avatar sx={{ ml: 2 }} />
