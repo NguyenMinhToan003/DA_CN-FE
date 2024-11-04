@@ -4,6 +4,9 @@ import { BrowserRouter } from 'react-router-dom'
 import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider } from '@mui/material/styles'
 import theme from './theme.js'
+import { socket } from '~/socket'
+const id = 1
+socket.emit('online', id)
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <ThemeProvider theme={theme}>
