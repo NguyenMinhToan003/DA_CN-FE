@@ -12,40 +12,42 @@ const Nav = ({ widthNav, isMobile }) => {
 
 
   return (
-    <Box
-      sx={{
-        width: widthNav,
-        backgroundColor: 'secondary.main',
-        minHeight: `calc(100vh - ${theme.Layout.headerHeight}px)`,
 
-        padding: 1,
-        position: 'sticky',
-        top: theme.Layout.headerHeight,
+    <>
+      <Box
+        sx={{
+          width: widthNav,
+          backgroundColor: 'secondary.main',
+          minHeight: `calc(100vh - ${theme.Layout.headerHeight}px)`,
+          padding: 1,
+          position: 'sticky',
+          top: theme.Layout.headerHeight,
+          transition: 'width 0.3s ease',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 1
+        }}
+      >
 
-        transition: 'width 0.3s ease',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 1
-      }}
-    >
+        <NavLink to='/' className='navLink' >
+          <Dashboard widthNav={widthNav} />
+        </NavLink>
+        <NavLink to='/profile' className='navLink' >
+          <Profile widthNav={widthNav} />
+        </NavLink>
+        <NavLink to='/subjects' className='navLink' >
+          <Subject widthNav={widthNav} />
+        </NavLink>
+        <NavLink to='/resources' className='navLink' >
+          <Resource widthNav={widthNav} />
+        </NavLink>
+        <NavLink to='/roomchats' className='navLink' >
+          <Chat widthNav={widthNav} />
+        </NavLink>
 
-      <NavLink to='/' className='navLink' >
-        <Dashboard widthNav={widthNav} />
-      </NavLink>
-      <NavLink to='/profile' className='navLink' >
-        <Profile widthNav={widthNav} />
-      </NavLink>
-      <NavLink to='/subjects' className='navLink' >
-        <Subject widthNav={widthNav} />
-      </NavLink>
-      <NavLink to='/resources' className='navLink' >
-        <Resource widthNav={widthNav} />
-      </NavLink>
-      <NavLink to='/roomchats' className='navLink' >
+      </Box>
 
-        <Chat widthNav={widthNav} />
-      </NavLink>
-    </Box>
+    </>
   )
 }
 

@@ -49,10 +49,10 @@ const theme = createTheme({
           default: '#181e2b'
         },
         messages: {
-          text_primary: '#1d2439',
-          bg_primary: '#e7d4c5',
-          text_secondary: '#101524',
-          bg_secondary: '#E0EDCD'
+          text_primary: '#101524',
+          bg_primary: '#E0EDCD',
+          text_secondary: '#1d2439',
+          bg_secondary: '#e7d4c5'
         }
       }
     }

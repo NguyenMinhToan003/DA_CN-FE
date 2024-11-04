@@ -26,7 +26,7 @@ const Resource = ({ widthNav }) => {
       }}
     >
       {
-        widthNav === theme.Layout.navWidth && <Typography >Tài liệu</Typography>
+        widthNav === theme.Layout.navWidth && <Typography >Resource</Typography>
       }
     </Button >
   )
