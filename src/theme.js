@@ -10,7 +10,8 @@ const theme = createTheme({
       palette: {
         primary: {
           main: '#3366ff',
-          more: '#e3f2fd'
+          more: '#e3f2fd',
+          header: '#3366ff'
         },
         secondary: {
           main: '#ffffff',
@@ -34,8 +35,9 @@ const theme = createTheme({
     dark: {
       palette: {
         primary: {
-          main: '#373e4a',
-          more: '#3366ff'
+          main: '#3366ff',
+          more: '#373e4a',
+          header: '#373e4a'
         },
         secondary: {
           main: '#232b38',
@@ -65,19 +67,26 @@ const theme = createTheme({
         }
       }
     },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+
+        }
+      }
+    },
+    MuiFormLabel: {
+      styleOverrides: {
+        root: {
+
+        }
+      }
+    },
     MuiCssBaseline: {
       styleOverrides: theme => ({
-        body: {
-          backgroundColor: theme.palette.background.default,
-          color: text => text.palette.text.main,
-          fontWeight: 200,
-          fontSize: '1rem',
-          fontFamily: 'Poppins , sans-serif'
-        },
         a: {
           textDecoration: 'none',
           color: 'inherit'
-        }
+        },
       })
     }
   }

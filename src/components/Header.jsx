@@ -39,7 +39,7 @@ const Header = ({ toggleNav, widthNav }) => {
       top: 0,
       left: 0,
       right: 0,
-      backgroundColor: 'primary.main',
+      backgroundColor: 'primary.header',
       height: theme.Layout.headerHeight,
       display: 'flex',
       alignItems: 'center',
