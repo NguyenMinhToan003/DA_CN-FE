@@ -4,6 +4,7 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
 import TextField from '@mui/material/TextField'
+import { Container } from '@mui/material'
 
 const Profile = () => {
   return (
@@ -46,28 +47,28 @@ const Profile = () => {
             Upload new image
           </Button>
         </Box>
-        <Box sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          backgroundColor: 'secondary.main',
-          width: '100%',
-          gap: 3,
-          paddingBottom: 2,
-          borderRadius: 3,
-
-        }}>
-          <Typography sx={{ paddingY: 2, paddingX: 2, marginX: 3, fontWeight: 'bold', fontSize: '1rem' }}>Thông tin cá nhân</Typography>
-          <Divider />
-          <TextField sx={{ marginX: 3 }} label='Họ và tên' />
-          <TextField sx={{ marginX: 3 }} label='Mã sinh viên' />
-          <TextField sx={{ marginX: 3 }} label='Email' />
-          <TextField sx={{ marginX: 3 }} label='Địa chỉ' />
-          <Box sx={{ display: 'flex', gap: 1, marginX: 3 }}>
-            <TextField sx={{ width: '100%' }} label='Số điện thoại' />
-            <TextField sx={{ width: '100%' }} label='Ngày sinh' />
+        <Container maxWidth='sm'>
+          <Box sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            backgroundColor: 'secondary.main',
+            width: '100%',
+            borderRadius: 3,
+            padding: 2,
+          }}>
+            <Typography sx={{ paddingY: 2, paddingX: 2, marginX: 3, fontWeight: 'bold', fontSize: '1rem' }}>Thông tin cá nhân</Typography>
+            <Divider />
+            <TextField label='Họ và tên' margin='normal' />
+            <TextField label='Mã sinh viên' margin='normal' />
+            <TextField label='Email' margin='normal' />
+            <TextField label='Địa chỉ' margin='normal' />
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              <TextField sx={{ width: '100%' }} label='Số điện thoại' margin='normal' />
+              <TextField sx={{ width: '100%' }} label='Ngày sinh' margin='normal' />
+            </Box>
+            <Button sx={{ width: 'fit-content', marginX: 3 }}>Lưu thay đổi</Button>
           </Box>
-          <Button sx={{ width: 'fit-content', marginX: 3 }}>Lưu thay đổi</Button>
-        </Box>
+        </Container>
       </Box>
     </>
   )

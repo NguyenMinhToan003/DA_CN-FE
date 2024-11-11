@@ -66,7 +66,7 @@ const Header = ({ toggleNav, widthNav }) => {
         }
       }}>
 
-        <Paper
+        {/* <Paper
           sx={{
             p: '2px 4px', display: 'flex', alignItems: 'center', width: {
               sm: '100%',
@@ -110,23 +110,17 @@ const Header = ({ toggleNav, widthNav }) => {
 
           <Button variant='contained' color='primary' onClick={handleSearch}>Tìm kiếm</Button>
 
-        </Paper>
+        </Paper> */}
 
         <Box sx={{
           display: 'flex', justifyContent: 'flex-end', alignItems: 'center'
         }}>
-
-
+          <ThemeMode />
           <IconButton color='success'>
-
             <Badge badgeContent={1} color='error'>
               <NotificationsNoneIcon sx={{ color: 'text.default' }} />
             </Badge>
-
           </IconButton>
-          <ThemeMode />
-
-
           <Typography sx={{
             ml: 2, color: 'text.default',
             whiteSpace: 'nowrap'
