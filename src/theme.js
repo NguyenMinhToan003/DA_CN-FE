@@ -22,7 +22,8 @@ const theme = createTheme({
           default: '#ffffff'
         },
         background: {
-          default: '#eff1f7'
+          default: '#eff1f7',
+          hover: '#e0e0e9'
         },
         messages: {
           text_primary: '#3F7000',
@@ -48,7 +49,8 @@ const theme = createTheme({
           default: '#ffffff'
         },
         background: {
-          default: '#181e2b'
+          default: '#181e2b',
+          hover: '#373e4a'
         },
         messages: {
           text_primary: '#101524',
@@ -81,6 +83,7 @@ const theme = createTheme({
         }
       }
     },
+
     MuiCssBaseline: {
       styleOverrides: theme => ({
         a: {

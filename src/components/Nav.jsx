@@ -21,11 +21,14 @@ const Nav = ({ widthNav, isMobile }) => {
           minHeight: `calc(100vh - ${theme.Layout.headerHeight}px)`,
           padding: 1,
           position: 'sticky',
+          justifyContent: 'flex-start',
+          alignItems: 'center',
           top: theme.Layout.headerHeight,
           transition: 'width 0.3s ease',
           display: 'flex',
           flexDirection: 'column',
-          gap: 1
+          gap: 1,
+          boxShadow: '0 0 5px rgba(0,0,0,0.2)',
         }}
       >
 
@@ -44,8 +47,7 @@ const Nav = ({ widthNav, isMobile }) => {
         <NavLink to='/roomchats' className='navLink' >
           <Chat widthNav={widthNav} />
         </NavLink>
-
-      </Box>
+      </Box >
 
     </>
   )
