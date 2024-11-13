@@ -10,16 +10,14 @@ const Chat = ({ widthNav }) => {
         display: 'flex',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        paddingX: 3,
+        paddingX: 2.6,
         paddingY: 2,
         borderRadius: 1,
         width: '100%',
-
         '.active &': {
           color: 'secondary.more',
           backgroundColor: 'primary.more'
         },
-
         transition: 'width 0.3s ease',
         color: 'text.main',
         ':hover': {

@@ -45,7 +45,8 @@ const Header = ({ toggleNav, widthNav }) => {
       alignItems: 'center',
       justifyContent: 'space-between',
       padding: 2,
-      zIndex: 1000
+      zIndex: 1000,
+      boxShadow: '0 0 5px rgba(0,0,0,0.2)'
     }}>
 
       <Box sx={{ width: widthNav, display: 'flex', transition: 'transform 0.3s ease' }}>

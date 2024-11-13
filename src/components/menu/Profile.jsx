@@ -11,7 +11,7 @@ const Profile = ({ widthNav }) => {
         display: 'flex',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        paddingX: 3,
+        paddingX: 2.6,
         paddingY: 2,
         borderRadius: 1,
         width: '100%',

@@ -4,19 +4,19 @@ import { Outlet } from 'react-router-dom'
 import Header from '~/components/Header'
 import theme from '~/theme'
 import { useState } from 'react'
-import useMediaQuery from '@mui/material/useMediaQuery'
+
 
 const Index = () => {
   const widthNavLocal = localStorage.getItem('widthNav')
   const [widthNav, setWidthNav] = useState(widthNavLocal ? parseInt(widthNavLocal) : theme.Layout.navWidth)
 
   const toggleNav = () => {
-    if (widthNav === 90) {
+    if (widthNav === 80) {
       setWidthNav(theme.Layout.navWidth)
       localStorage.setItem('widthNav', theme.Layout.navWidth)
     } else {
-      setWidthNav(90)
-      localStorage.setItem('widthNav', 90)
+      setWidthNav(80)
+      localStorage.setItem('widthNav', 80)
     }
   }
   return (

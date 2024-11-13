@@ -4,12 +4,14 @@ import Home from '~/pages/home/Home'
 import Roomchats from '~/pages/Roomchats/Roomchats'
 import Chat from '~/pages/chat/Chat'
 import Profile from '~/pages/profile/Profile'
+import Login from '~/pages/auth/Login'
 
 const AppRouter = () => {
 
 
   return (
     <Routes>
+      <Route path="/login" element={<Login />} />
       <Route path="/" element={<Index />} >
         <Route index element={<Home />} />
         <Route path='profile' element={<Profile />} />

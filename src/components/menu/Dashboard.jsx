@@ -13,7 +13,7 @@ const Dashboard = ({ widthNav }) => {
         display: 'flex',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        paddingX: 3,
+        paddingX: 2.6,
         paddingY: 2,
         width: '100%',
         borderRadius: 1,
