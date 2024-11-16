@@ -15,7 +15,8 @@ const theme = createTheme({
         },
         secondary: {
           main: '#ffffff',
-          more: '#3366ff'
+          more: '#3366ff',
+          checked: '#f0f2f8'
         },
         text: {
           main: '#3a414e',
@@ -42,7 +43,8 @@ const theme = createTheme({
         },
         secondary: {
           main: '#232b38',
-          more: '#d5e6fd'
+          more: '#d5e6fd',
+          checked: '#f0f2f8'
         },
         text: {
           main: '#a8adb5',
@@ -83,13 +85,29 @@ const theme = createTheme({
         }
       }
     },
+    MuiTypography: {
+      styleOverrides: {
+        body1: {
+          fontSize: 15
+        },
+        body2: {
+          fontSize: '1rem'
+        }
+      }
+    },
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
 
+        }
+      }
+    },
     MuiCssBaseline: {
       styleOverrides: theme => ({
         a: {
           textDecoration: 'none',
           color: 'inherit'
-        },
+        }
       })
     }
   }

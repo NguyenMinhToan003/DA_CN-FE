@@ -28,7 +28,7 @@ const Nav = ({ widthNav, isMobile }) => {
           display: 'flex',
           flexDirection: 'column',
           gap: 1,
-          boxShadow: '0 0 5px rgba(0,0,0,0.2)',
+          boxShadow: '0 0 5px rgba(0,0,0,0.2)'
         }}
       >
 

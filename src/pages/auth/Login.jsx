@@ -11,6 +11,13 @@ const Login = () => {
       window.location.href = '/'
     }
   }
+  const handlerLogin2 = async () => {
+    const response = await login(username, password, 'teacher')
+    if (response) {
+      localStorage.setItem('user', JSON.stringify(response))
+      window.location.href = '/'
+    }
+  }
   return <>
     <Box>
       <Container maxWidth="sm">
@@ -27,6 +34,10 @@ const Login = () => {
         />
         <Button variant="contained" fullWidth sx={{ mt: 2 }}
           onClick={handlerLogin}>
+          Login
+        </Button>
+        <Button variant="contained" fullWidth sx={{ mt: 2 }}
+          onClick={handlerLogin2}>
           Login
         </Button>
       </Container>
