@@ -9,15 +9,16 @@ import Typography from '@mui/material/Typography'
 import ThemeMode from '~/components/ThemeMode'
 import MenuIcon from '@mui/icons-material/Menu'
 import CloseIcon from '@mui/icons-material/Close'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import { useRef, useState } from 'react'
 import Button from '@mui/material/Button'
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import Badge from '@mui/material/Badge'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone'
 
 const Header = ({ toggleNav, widthNav }) => {
+  const user = JSON.parse(localStorage.getItem('user'))
   const [key, setKey] = useState('')
   const refSearch = useRef(null)
   const [anchorEl, setAnchorEl] = useState(null)
@@ -126,7 +127,7 @@ const Header = ({ toggleNav, widthNav }) => {
             ml: 2, color: 'text.default',
             whiteSpace: 'nowrap'
           }} >
-            Nguyễn Minh Toàn
+            {user?.name}
           </Typography>
           <Avatar sx={{ ml: 2 }} />
         </Box>

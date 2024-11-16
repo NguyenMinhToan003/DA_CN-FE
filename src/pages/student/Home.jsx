@@ -7,16 +7,18 @@ import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
 import Divider from '@mui/material/Divider'
 import Box from '@mui/material/Box'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import CloseIcon from '@mui/icons-material/Close'
 import IconButton from '@mui/material/IconButton'
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked'
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
 import Avatar from '@mui/material/Avatar'
+import Alert from '@mui/material/Alert'
+import CheckIcon from '@mui/icons-material/Check'
+import AlertTitle from '@mui/material/AlertTitle'
 import { getTeachers } from '~/apis/teacherAPi'
 import { student_teacher } from '~/apis/studentAPI'
 import { createTopic, getTopicById } from '~/apis/topicAPI'
-
 
 const steps = ['Đăng kí giáo viên', 'Đăng kí đề tài', 'Bắt đầu đồ án']
 let teacherListDefault = []
@@ -30,33 +32,35 @@ const Home = () => {
   const [teacherChecked, setTeacherChecked] = useState(null)
   const [teacherSearch, setTeacherSearch] = useState('')
   const [teacherList, setTeacherList] = useState([])
-  const fetchTeacherList = async () => {
-    const response = await getTeachers()
-    setTeacherList(response)
-    teacherListDefault = response
-    response.forEach(teacher => {
+  const [topicOwner, setTopicOwner] = useState({})
+  const fetchData = async () => {
+    const teacher = await getTeachers()
+    setTeacherList(teacher)
+    teacherListDefault = teacher
+    teacher.forEach(teacher => {
       if (teacher._id === user.teacherId) {
         setTeacherChecked(teacher)
         setActiveStep(1)
       }
     })
-  }
-  const fetchTopic = async () => {
-    const response = await getTopicById(user.topicId)
-    if (response._id) {
-      setTopicName(response.name)
-      setTopicTech(response.tech)
-      setTopicDescription(response.description)
+    const topic = await getTopicById(user.topicId)
+    if (topic._id) {
+      setTopicOwner(topic)
+      setTopicName(topic.name)
+      setTopicTech(topic.tech)
+      setTopicDescription(topic.description)
       setActiveStep(2)
     }
+    if (topic.process === 1) setActiveStep(3)
   }
+
   useEffect(() => {
-    fetchTeacherList()
-    fetchTopic()
+    fetchData()
   }, [])
   const checkStatusButtonNext = () => {
     if (teacherChecked === null && activeStep === 0) return false
     if (activeStep === 1 && (topicName === '' || topicTech === '' || topicDescription === '')) return false
+    if (activeStep === 3) return false
     return true
   }
   const checkStatusButtonBack = () => {
@@ -95,30 +99,26 @@ const Home = () => {
     setTeacherList(newList)
   }
   return <>
-
     <Container maxWidth='md' sx={{
-      mt: 2,
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'space-between',
       backgroundColor: 'secondary.main',
-      borderRadius: 3,
-      height: 750,
+      borderRadius: 2,
+      height: 650,
       overflow: 'hidden',
       padding: 3,
       boxShadow: 2
     }}>
       <Box sx={{ height: '100%' }}>
-        <Typography variant='h4' gutterBottom sx={{ whiteSpace: 'nowrap' }}>
+        <Typography variant='h5' gutterBottom sx={{ whiteSpace: 'nowrap', mb: 2 }}>
           Đăng Ký Đề Tài Đồ Án Chuyên Ngành
         </Typography>
         <Divider />
-        <Stepper activeStep={activeStep} sx={{ my: 3 }} alternativeLabel >
+        <Stepper activeStep={activeStep} sx={{ my: 3 }} >
           {
             steps.map((step, index) => (
-              <Step key={index}
-                sx={{ cursor: 'pointer' }}
-              >
+              <Step key={index}>
                 <StepLabel>
                   {step}
                 </StepLabel>
@@ -141,6 +141,7 @@ const Home = () => {
             <Box sx={{
               minWidth: '100%',
               opacity: activeStep === 0 ? 1 : 0,
+              visibility: activeStep === 0 ? 'visible' : 'hidden',
               transition: 'opacity 0.3s ease'
             }}>
               <TextField
@@ -171,7 +172,7 @@ const Home = () => {
                 <Box sx={{
                   overflowY: 'auto',
                   display: 'flex',
-                  height: 380,
+                  height: 330,
                   flexDirection: 'column',
                   gap: 0.5
                 }}>
@@ -188,26 +189,25 @@ const Home = () => {
                           cursor: 'pointer',
                           borderRadius: 1,
                           '&:hover': {
-                            backgroundColor: teacherChecked?._id !== teacher._id
-                              ? 'background.hover'
-                              : 'messages.bg_primary'
+                            backgroundColor: teacherChecked?._id == teacher._id
+                              ? 'primary.more'
+                              : 'background.hover'
                           },
                           backgroundColor: teacherChecked?._id === teacher._id
-                            ? 'messages.bg_primary'
+                            ? 'primary.more'
                             : 'secondary.main',
-                          color: teacherChecked?._id === teacher._id
-                            ? 'messages.text_primary' : 'text.primary',
+                          color: 'text.primary'
 
                         }}
                       >
                         <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                          <Avatar sx={{ width: 50, height: 50 }} />
+                          <Avatar sx={{ width: 30, height: 30 }} />
                           <Typography sx={{
                             fontWeight: teacherChecked?._id === teacher._id
                               ? 'bold' : 'normal'
                           }}>{teacher.name}</Typography>
                         </Box>
-                        <IconButton color='primary'>
+                        <IconButton color='inherit'>
                           {
                             teacherChecked?._id === teacher._id
                               ? <RadioButtonCheckedIcon />
@@ -223,6 +223,7 @@ const Home = () => {
             <Box sx={{
               minWidth: '100%',
               opacity: activeStep === 1 ? 1 : 0,
+              visibility: activeStep === 1 ? 'visible' : 'hidden',
               transition: 'opacity 0.3s ease'
             }}>
               <TextField
@@ -262,26 +263,80 @@ const Home = () => {
                 required
               />
             </Box>
-            {
-              activeStep === 2 &&
-              <Box sx={{ minWidth: '100%' }}>
-                <Typography variant='h6'>Đang chờ duyệt</Typography>
-              </Box>
-            }
+            <Box sx={{
+              minWidth: '100%',
+              opacity: activeStep === 2 ? 1 : 0,
+              visibility: activeStep === 2 ? 'visible' : 'hidden',
+              transition: 'opacity 0.3s ease'
+            }}>
+              {
+                activeStep === 2 &&
+                <Box sx={{ minWidth: '100%' }}>
+                  <Alert severity='warning' sx={{ padding: 1, mb: 1 }}>
+                    <AlertTitle>Đề tài đang chờ duyệt</AlertTitle>
+                  </Alert>
+                  <Alert severity='info' sx={{ padding: 1 }}>
+                    <AlertTitle>Thông tin đề tài</AlertTitle>
+                    {/* <Tooltip title='Sao chép mã đề tài'>
+                      <Button
+                        startIcon={<ContentCopyIcon />}
+                        onClick={async () => await navigator.clipboard.writeText(topicOwner?._id)} variant='text' >
+                        Mã đề tài:{topicOwner?._id}
+                      </Button>
+                    </Tooltip> */}
+                    <Typography>Mã đề tài: {topicOwner?._id}</Typography>
+                    <Typography>Tên đề tài: {topicOwner?.name}</Typography>
+                    <Typography>Công nghệ: {topicOwner?.tech}</Typography>
+                    <Typography>Mô tả: {topicOwner?.description}</Typography>
+                    <Typography>Giáo viên hướng dẫn: {teacherChecked?.name}</Typography>
+                  </Alert>
+                </Box>
+              }
+            </Box>
+            <Box sx={{
+              minWidth: '100%',
+              opacity: activeStep === 3 ? 1 : 0,
+              transition: 'opacity 0.3s ease'
+            }}>
+              {
+                activeStep === 3 &&
+                <Box sx={{ minWidth: '100%' }}>
+                  <Alert severity='success' variant='filled' icon={<CheckIcon />} sx={{ padding: 1, mb: 1 }}>
+                    Đề tài đã được chấp nhận
+                  </Alert>
+                  <Alert severity='info' sx={{ padding: 1 }}>
+                    <AlertTitle>Thông tin đề tài</AlertTitle>
+                    {/* <Tooltip title='Sao chép mã đề tài'>
+                      <Button
+                        startIcon={<ContentCopyIcon />}
+                        onClick={async () => await navigator.clipboard.writeText(topicOwner?._id)} variant='text' >
+                        Mã đề tài:{topicOwner?._id}
+                      </Button>
+                    </Tooltip> */}
+                    <Typography>Mã đề tài: {topicOwner?._id}</Typography>
+                    <Typography>Tên đề tài: {topicOwner?.name}</Typography>
+                    <Typography>Công nghệ: {topicOwner?.tech}</Typography>
+                    <Typography>Mô tả: {topicOwner?.description}</Typography>
+                    <Typography>Giáo viên hướng dẫn: {teacherChecked?.name}</Typography>
+                  </Alert>
+                </Box>
+              }
+            </Box>
           </Box>
+
         </Box>
       </Box>
       <Box sx={{
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'flex-end'
       }}>
-        <Button
+        {/* <Button
           variant={checkStatusButtonBack() ? 'contained' : 'disabled'}
           color='secondary'
           onClick={handleBack}>
           Quay lại
-        </Button>
+        </Button> */}
         <Button
           variant={checkStatusButtonNext() ? 'contained' : 'disabled'}
           color='primary'

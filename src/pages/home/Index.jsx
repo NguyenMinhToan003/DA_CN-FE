@@ -24,7 +24,8 @@ const Index = () => {
       <Header toggleNav={toggleNav} widthNav={widthNav} />
       <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
         <Nav widthNav={widthNav} />
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{ width: '100%', position: 'relative' }}>
+
           <Outlet />
         </Box>
       </Box>
