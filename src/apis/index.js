@@ -1,4 +1,6 @@
 import axios from 'axios'
+import { StatusCodes } from 'http-status-codes'
+import { toast } from 'react-toastify'
 const api = axios.create({
   baseURL: 'http://localhost:4040/api/v1',
   withCredentials: true
@@ -19,7 +21,9 @@ api.interceptors.response.use(
     if (error.response.status === StatusCodes.UNAUTHORIZED) {
       window.location = '/login'
     }
-    return Promise.reject(error)
+    if (error.response.status === StatusCodes.BAD_REQUEST) {
+      toast.error(error.response.data.message.details[0].message)
+    }
   }
 )
 

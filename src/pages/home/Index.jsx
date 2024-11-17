@@ -25,7 +25,6 @@ const Index = () => {
       <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
         <Nav widthNav={widthNav} />
         <Box sx={{ width: '100%', position: 'relative' }}>
-
           <Outlet />
         </Box>
       </Box>
