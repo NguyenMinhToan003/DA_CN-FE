@@ -19,7 +19,6 @@ import AlertTitle from '@mui/material/AlertTitle'
 import { getTeachers } from '~/apis/teacherAPi'
 import { student_teacher } from '~/apis/studentAPI'
 import { createTopic, getTopicById } from '~/apis/topicAPI'
-
 const steps = ['Đăng kí giáo viên', 'Đăng kí đề tài', 'Bắt đầu đồ án']
 let teacherListDefault = []
 const Home = () => {
@@ -43,15 +42,17 @@ const Home = () => {
         setActiveStep(1)
       }
     })
-    const topic = await getTopicById(user.topicId)
-    if (topic._id) {
-      setTopicOwner(topic)
-      setTopicName(topic.name)
-      setTopicTech(topic.tech)
-      setTopicDescription(topic.description)
-      setActiveStep(2)
+    if (user.topicId) {
+      const topic = await getTopicById(user.topicId)
+      if (topic._id) {
+        setTopicOwner(topic)
+        setTopicName(topic.name)
+        setTopicTech(topic.tech)
+        setTopicDescription(topic.description)
+        setActiveStep(2)
+      }
+      if (topic.process === 1) setActiveStep(3)
     }
-    if (topic.process === 1) setActiveStep(3)
   }
 
   useEffect(() => {
@@ -60,6 +61,7 @@ const Home = () => {
   const checkStatusButtonNext = () => {
     if (teacherChecked === null && activeStep === 0) return false
     if (activeStep === 1 && (topicName === '' || topicTech === '' || topicDescription === '')) return false
+    if (activeStep === 2 && topicOwner.process == 0) return false
     if (activeStep === 3) return false
     return true
   }
