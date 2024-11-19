@@ -9,8 +9,7 @@ import theme from '~/theme'
 import { NavLink } from 'react-router-dom'
 
 const Nav = ({ widthNav, isMobile }) => {
-
-
+  const user = JSON.parse(localStorage.getItem('user'))
   return (
 
     <>
@@ -31,14 +30,13 @@ const Nav = ({ widthNav, isMobile }) => {
           boxShadow: '0 0 5px rgba(0,0,0,0.2)'
         }}
       >
-
         <NavLink to='/' className='navLink' >
           <Dashboard widthNav={widthNav} />
         </NavLink>
         <NavLink to='/profile' className='navLink' >
           <Profile widthNav={widthNav} />
         </NavLink>
-        <NavLink to='/subjects' className='navLink' >
+        <NavLink to={`/topic/${user.topicId}`} className='navLink' >
           <Subject widthNav={widthNav} />
         </NavLink>
         <NavLink to='/resources' className='navLink' >

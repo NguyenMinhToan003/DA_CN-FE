@@ -7,14 +7,14 @@ const Login = () => {
   const handlerLogin = async () => {
     const response = await login(username, password, 'student')
     if (response) {
-      localStorage.setItem('user', JSON.stringify(response))
+      localStorage.setItem('user', JSON.stringify({ ...response, role: 'student' }))
       window.location.href = '/'
     }
   }
   const handlerLogin2 = async () => {
     const response = await login(username, password, 'teacher')
     if (response) {
-      localStorage.setItem('user', JSON.stringify(response))
+      localStorage.setItem('user', JSON.stringify({ ...response, role: 'teacher' }))
       window.location.href = '/'
     }
   }

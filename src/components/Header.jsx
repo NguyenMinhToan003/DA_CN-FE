@@ -16,6 +16,7 @@ import Badge from '@mui/material/Badge'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone'
+import { NavLink } from 'react-router-dom'
 
 const Header = ({ toggleNav, widthNav }) => {
   const user = JSON.parse(localStorage.getItem('user'))
@@ -127,7 +128,9 @@ const Header = ({ toggleNav, widthNav }) => {
             ml: 2, color: 'text.default',
             whiteSpace: 'nowrap'
           }} >
-            {user?.name}
+            <NavLink to='/login' style={{ textDecoration: 'none', color: 'inherit' }}>
+              {user?.name}
+            </NavLink>
           </Typography>
           <Avatar sx={{ ml: 2 }} />
         </Box>

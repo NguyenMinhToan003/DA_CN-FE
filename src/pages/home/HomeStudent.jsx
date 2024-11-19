@@ -19,9 +19,12 @@ import AlertTitle from '@mui/material/AlertTitle'
 import { getTeachers } from '~/apis/teacherAPi'
 import { student_teacher } from '~/apis/studentAPI'
 import { createTopic, getTopicById } from '~/apis/topicAPI'
+import Tooltip from '@mui/material/Tooltip'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
+import { toast } from 'react-toastify'
 const steps = ['Đăng kí giáo viên', 'Đăng kí đề tài', 'Bắt đầu đồ án']
 let teacherListDefault = []
-const Home = () => {
+const HomeStudent = () => {
   const user = JSON.parse(localStorage.getItem('user'))
   // localStorage.setItem('user', {})
   const [activeStep, setActiveStep] = useState(0)
@@ -39,19 +42,22 @@ const Home = () => {
     teacher.forEach(teacher => {
       if (teacher._id === user.teacherId) {
         setTeacherChecked(teacher)
+      }
+      if (user.status === 1) {
         setActiveStep(1)
       }
     })
+
     if (user.topicId) {
-      const topic = await getTopicById(user.topicId)
-      if (topic._id) {
-        setTopicOwner(topic)
-        setTopicName(topic.name)
-        setTopicTech(topic.tech)
-        setTopicDescription(topic.description)
+      const response = await getTopicById(user.topicId)
+      if (response._id) {
+        setTopicOwner(response)
+        setTopicName(response.name)
+        setTopicTech(response.tech)
+        setTopicDescription(response.description)
         setActiveStep(2)
       }
-      if (topic.process === 1) setActiveStep(3)
+      if (response?.process === 1) setActiveStep(3)
     }
   }
 
@@ -65,20 +71,29 @@ const Home = () => {
     if (activeStep === 3) return false
     return true
   }
-  const checkStatusButtonBack = () => {
-    if (activeStep === 0) return false
-    return true
-  }
+  // const checkStatusButtonBack = () => {
+  //   if (activeStep === 0) return false
+  //   return true
+  // }
   const handleNext = async () => {
     if (teacherChecked === null && activeStep === 0) return
     if (activeStep === 1 && (topicName === '' || topicTech === '' || topicDescription === '')) return
     if (activeStep === 0) {
       const id = user._id
-      await student_teacher(id, teacherChecked._id)
+      const response = await student_teacher(id, teacherChecked._id)
+      if (response.modifiedCount === 1) {
+        toast.info('Hãy chờ giáo viên chấp nhận')
+      }
     }
     if (activeStep === 1) {
       const id = user._id
-      await createTopic(topicName, topicDescription, topicTech, id)
+      const response = await createTopic(topicName, topicDescription, topicTech, id)
+      if (!response?.modifiedCount) {
+        toast.error(response.message)
+      }
+    }
+    if (activeStep === 2) {
+      await fetchData()
     }
 
     if (activeStep < 3)
@@ -279,14 +294,13 @@ const Home = () => {
                   </Alert>
                   <Alert severity='info' sx={{ padding: 1 }}>
                     <AlertTitle>Thông tin đề tài</AlertTitle>
-                    {/* <Tooltip title='Sao chép mã đề tài'>
+                    <Tooltip title='Sao chép mã đề tài'>
                       <Button
                         startIcon={<ContentCopyIcon />}
                         onClick={async () => await navigator.clipboard.writeText(topicOwner?._id)} variant='text' >
                         Mã đề tài:{topicOwner?._id}
                       </Button>
-                    </Tooltip> */}
-                    <Typography>Mã đề tài: {topicOwner?._id}</Typography>
+                    </Tooltip>
                     <Typography>Tên đề tài: {topicOwner?.name}</Typography>
                     <Typography>Công nghệ: {topicOwner?.tech}</Typography>
                     <Typography>Mô tả: {topicOwner?.description}</Typography>
@@ -308,14 +322,14 @@ const Home = () => {
                   </Alert>
                   <Alert severity='info' sx={{ padding: 1 }}>
                     <AlertTitle>Thông tin đề tài</AlertTitle>
-                    {/* <Tooltip title='Sao chép mã đề tài'>
+                    <Tooltip title='Sao chép mã đề tài'>
                       <Button
                         startIcon={<ContentCopyIcon />}
                         onClick={async () => await navigator.clipboard.writeText(topicOwner?._id)} variant='text' >
                         Mã đề tài:{topicOwner?._id}
                       </Button>
-                    </Tooltip> */}
-                    <Typography>Mã đề tài: {topicOwner?._id}</Typography>
+                    </Tooltip>
+                    {/* <Typography>Mã đề tài: {topicOwner?._id}</Typography> */}
                     <Typography>Tên đề tài: {topicOwner?.name}</Typography>
                     <Typography>Công nghệ: {topicOwner?.tech}</Typography>
                     <Typography>Mô tả: {topicOwner?.description}</Typography>
@@ -339,15 +353,18 @@ const Home = () => {
           onClick={handleBack}>
           Quay lại
         </Button> */}
-        <Button
-          variant={checkStatusButtonNext() ? 'contained' : 'disabled'}
-          color='primary'
-          onClick={handleNext}>
-          Tiếp theo
-        </Button>
+        {
+          activeStep < 3 &&
+          <Button
+            variant={checkStatusButtonNext() ? 'contained' : 'disabled'}
+            color='primary'
+            onClick={handleNext}>
+            Tiếp theo
+          </Button>
+        }
       </Box>
     </Container >
 
   </>
 }
-export default Home
+export default HomeStudent
