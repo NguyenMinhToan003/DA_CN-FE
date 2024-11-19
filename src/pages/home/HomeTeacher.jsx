@@ -16,18 +16,19 @@ import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
 import { useEffect, useState } from 'react'
 import { getListStudentByTeacherId } from '~/apis/studentAPI'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import theme from '~/theme'
 import SearchIcon from '@mui/icons-material/Search'
 import CloseIcon from '@mui/icons-material/Close'
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
 import { confirmStudents } from '~/apis/teacherAPI'
-import { confirmTopic, joinTopic } from '../../apis/topicAPI'
+import { confirmTopic, joinTopic, createEmptyTopic } from '~/apis/topicAPI'
 import { toast } from 'react-toastify'
 
 
 let listStudentDefault = []
 const HomeTeacher = () => {
+  const navigate = useNavigate()
   const user = JSON.parse(localStorage.getItem('user'))
   const [studentListChecked, setStudentListChecked] = useState([])
   const [studentList, setStudentList] = useState([])
@@ -42,6 +43,7 @@ const HomeTeacher = () => {
     fetchStudentList()
   }, [])
 
+
   const handleCheckStudent = (student) => {
     const index = studentListChecked.indexOf(student)
     if (index === -1) {
@@ -55,6 +57,7 @@ const HomeTeacher = () => {
     const newList = listStudentDefault.filter(student =>
       student.name.toLowerCase().includes(key.toLowerCase()))
     setStudentList(newList)
+
   }
   const handlerComfimStudents = async () => {
     const studentIds = studentListChecked.map(student => student._id)
@@ -62,24 +65,28 @@ const HomeTeacher = () => {
     if (response.acknowledged > 0) {
       fetchStudentList()
       setStudentListChecked([])
-      toast.success(`Đã thêm ${response.upsertedCount} sinh viên`)
+      if (response.modifiedCount > 0) {
+        toast.success(`${response.modifiedCount} sinh viên đã được xác nhận`)
+      }
+      else {
+        toast.warning('Chưa có thay đổi')
+      }
     }
   }
   const handlerConfimTopics = async () => {
-    let topicIds = []
-    studentListChecked.forEach(student => {
-      if (student.topicId) {
-        fetchStudentList()
-        setStudentListChecked([])
-        topicIds.push(student.topicId)
-      }
-    })
-    const response = await confirmTopic(user._id, topicIds)
+    if (studentListChecked.length === 0 && studentListChecked.length > 1) return
+    const topicId = studentListChecked[0].topicId
+    const response = await confirmTopic(user._id, topicId)
     if (response.acknowledged === true) {
       setStudentListChecked([])
       fetchStudentList()
       setStudentListChecked([])
-      toast.success(`Xác nhận ${response.upsertedCount} đề tài`)
+      if (response.modifiedCount > 0) {
+        toast.success(`${response.modifiedCount} sinh viên đã được xác nhận đề tài`)
+      }
+      else {
+        toast.warning('Chưa có thay đổi')
+      }
     }
   }
   const handleJoinTopic = async () => {
@@ -99,14 +106,28 @@ const HomeTeacher = () => {
     })
     if (check) {
       const response = await joinTopic(topicId, studentIds)
-      if (response.modifiedCount > 0) toast.success(response.message)
+      if (response.modifiedCount > 0) {
+        fetchStudentList()
+        setStudentListChecked([])
+        toast.success(response.message)
+      }
     }
     else {
       toast.error('Không thể làm nhóm được')
     }
   }
+  const handleCreateTopic = async (studentId) => {
+    const response = await createEmptyTopic(user._id, studentId)
+    if (response.insertedId) {
+      navigate(`/topic/${response.insertedId}`)
+      toast.info('Đang tạo đề tài')
+    }
+  }
+  const handleUpdateTopic = async (student) => {
+    navigate(`/topic/${student}`)
+  }
   return <>
-    <Container maxWidth='2xl' sx={{ position: 'relative', mt: 2, }}>
+    <Container maxWidth='2xl' sx={{ position: 'relative', mt: 2 }}>
       <Paper >
         <Toolbar sx={{
           backgroundColor: 'primary.more',
@@ -135,7 +156,10 @@ const HomeTeacher = () => {
                 </Typography>
                 <Button variant='contained' onClick={handlerComfimStudents}>Nhận sinh viên</Button>
                 <Button variant='contained' onClick={handleJoinTopic}>Nhóm</Button>
-                <Button variant='contained' onClick={handlerConfimTopics}>Xác nhận đề tài</Button>
+                {
+                  studentListChecked.length === 1 &&
+                  <Button variant='contained' onClick={handlerConfimTopics}>Xác nhận đề tài</Button>
+                }
                 <Button
                   variant='contained'
                   color='error'
@@ -144,10 +168,15 @@ const HomeTeacher = () => {
                 </Button>
               </Box>
               :
-              <Typography variant='h6'
-                sx={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>
-                Danh sách sinh viên
-              </Typography>
+              <Box>
+                <Typography variant='h6'
+                  sx={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>
+                  Danh sách sinh viên
+                </Typography>
+                <Typography variant='body2' sx={{ color: 'text.secondary' }}>
+                  {studentList.length} sinh viên
+                </Typography>
+              </Box>
           }
           <Paper sx={{ display: 'flex', alignItems: 'center', boxShadow: 0, p: 0.5, border: 1, borderColor: 'background.default' }}>
             <InputBase
@@ -231,23 +260,34 @@ const HomeTeacher = () => {
                     <TableCell>
                       <Typography>
                         {
-                          student?.topic[0]?.name ?
-                            <Typography
-                              sx={{
-                                textDecoration: 'underline', '&:hover': {
-                                  color: 'primary.main'
-                                }
-                              }}>
-                              <NavLink to={`/topic?id=${student.topicId}`}>
-                                {student.topic[0]?.name}
-                              </NavLink>
-                            </Typography>
+                          student?.topicId ?
+                            (student?.topic[0].name === '' ?
+                              <Button
+                                onClick={() => handleUpdateTopic(student.topicId)}
+                                variant='contained'
+                                color='warning'
+                                sx={{ whiteSpace: 'nowrap' }}>
+                                Sửa đề tài
+                              </Button>
+                              : <Typography
+                                sx={{
+                                  whiteSpace: 'nowrap',
+                                  textDecoration: 'underline', '&:hover': {
+                                    color: 'primary.main'
+                                  }
+                                }}>
+                                <NavLink to={`/topic/${student.topicId}`}>
+                                  {student.topic[0]?.name}
+                                </NavLink>
+                              </Typography>
+                            )
                             : student?.status === 1
                               ? <Button
+                                onClick={() => handleCreateTopic(student._id)}
                                 variant='contained'
                                 color='primary'
                                 sx={{ whiteSpace: 'nowrap' }}>
-                                Chọn đề tài
+                                Tạo đề tài
                               </Button>
                               : ''
                         }
@@ -279,7 +319,6 @@ const HomeTeacher = () => {
           </Table>
         </TableContainer>
       </Paper >
-
     </Container >
   </>
 }
