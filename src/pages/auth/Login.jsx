@@ -1,21 +1,23 @@
 import { Box, Button, Container, TextField, Typography } from '@mui/material'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { login } from '~/apis/authAPI'
 const Login = () => {
+  const navigate = useNavigate()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const handlerLogin = async () => {
     const response = await login(username, password, 'student')
     if (response) {
       localStorage.setItem('user', JSON.stringify({ ...response, role: 'student' }))
-      window.location.href = '/'
+      navigate('/')
     }
   }
   const handlerLogin2 = async () => {
     const response = await login(username, password, 'teacher')
     if (response) {
       localStorage.setItem('user', JSON.stringify({ ...response, role: 'teacher' }))
-      window.location.href = '/'
+      navigate('/')
     }
   }
   return <>

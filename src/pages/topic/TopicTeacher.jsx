@@ -1,11 +1,24 @@
-import { Alert, Box, Button, Chip, Container, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material'
+import Alert from '@mui/material/Alert'
+import Box from '@mui/material/Box'
+import Container from '@mui/material/Container'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import Typography from '@mui/material/Typography'
+import TextField from '@mui/material/TextField'
+import TableRow from '@mui/material/TableRow'
+import Table from '@mui/material/Table'
+import Divider from '@mui/material/Divider'
+import Button from '@mui/material/Button'
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { getDetailTopicById } from '~/apis/topicAPI'
-import { confirmTopic, updateTopic } from '~/apis/topicAPI'
+import { confirmTopic, updateTopic, deleteTopic, removeStudent } from '~/apis/topicAPI'
 
 const TopicTeacher = () => {
+  const navigate = useNavigate()
   const user = JSON.parse(localStorage.getItem('user'))
   const { id } = useParams()
   const [topic, setTopic] = useState({
@@ -38,6 +51,13 @@ const TopicTeacher = () => {
       toast.success('Xác nhận đề tài thành công')
     }
   }
+  const handleDenyTopic = async () => {
+    const response = await deleteTopic(id, user._id)
+    if (response.acknowledged) {
+      navigate('/')
+      toast.success('Hủy đề tài thành công')
+    }
+  }
   const handleUpdateTopic = async () => {
     const response = await updateTopic(topic.name, topic.description, topic.tech, topic.process, id, user._id)
     if (response.modifiedCount > 0) {
@@ -50,7 +70,14 @@ const TopicTeacher = () => {
       toast.warning('Chưa có thay đổi')
     }
   }
-
+  const handleRemoveStudent = async (studentId) => {
+    const response = await removeStudent(id, studentId, user._id)
+    if (response.acknowledged) {
+      fetchTopic()
+      toast.success(response.message)
+    }
+    toast.error(response.message)
+  }
   return <>
     <Box sx={{ display: 'flex', gap: 3, p: 2 }}>
       <Container sx={{ backgroundColor: 'secondary.main', p: 2, borderRadius: 1 }} maxWidth='md'>
@@ -84,10 +111,16 @@ const TopicTeacher = () => {
           <Box>
             {
               topic.process === 0 ?
-                <Button variant='contained' color='primary'
-                  onClick={handleConfimTopic} sx={{ mr: 1 }}>
-                  Chấp nhận đề tài
-                </Button>
+                <Box>
+                  <Button variant='contained' color='error' sx={{ mr: 1 }}
+                    onClick={handleDenyTopic}>
+                    Hủy đề tài
+                  </Button>
+                  <Button variant='contained' color='primary'
+                    onClick={handleConfimTopic} sx={{ mr: 1 }}>
+                    Chấp nhận đề tài
+                  </Button>
+                </Box>
                 : ''
             }
 
@@ -117,7 +150,8 @@ const TopicTeacher = () => {
                     <TableCell>{student.studentCode}</TableCell>
                     <TableCell>{student.name}</TableCell>
                     <TableCell>
-                      <Button variant='contained' color='error'>Hủy</Button>
+                      <Button variant='contained' color='error'
+                        onClick={() => handleRemoveStudent(student._id)}>Hủy</Button>
                     </TableCell>
                   </TableRow>
                 ))
