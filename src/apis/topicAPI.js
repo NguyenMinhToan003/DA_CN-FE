@@ -41,3 +41,13 @@ export const confirmTopic = async (teacherId, topicId) => {
     { teacherId: teacherId, topicId: topicId })
   return response.data
 }
+export const deleteTopic = async (id, teacherId) => {
+  const response = await APIs.post('/topic/delete-topic', { id: id, teacherId: teacherId })
+  return response.data
+}
+export const removeStudent = async (topicId, studentId, teacherId) => {
+  const response = await APIs.post('/topic/suport-student/remove-student',
+    { topicId: topicId, studentId: studentId, teacherId: teacherId })
+  return response.data
+}
+

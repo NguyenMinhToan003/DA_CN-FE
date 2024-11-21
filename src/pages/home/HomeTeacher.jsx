@@ -34,15 +34,16 @@ const HomeTeacher = () => {
   const [studentList, setStudentList] = useState([])
   const [searchStudent, setSearchStudent] = useState('')
   const fetchStudentList = async () => {
+
     const response = await getListStudentByTeacherId(user._id)
     listStudentDefault = response
     setStudentList(response)
+
   }
 
   useEffect(() => {
     fetchStudentList()
   }, [])
-
 
   const handleCheckStudent = (student) => {
     const index = studentListChecked.indexOf(student)
@@ -54,10 +55,10 @@ const HomeTeacher = () => {
     }
   }
   const handleSearchStudent = async (key) => {
+    setSearchStudent(key)
     const newList = listStudentDefault.filter(student =>
       student.name.toLowerCase().includes(key.toLowerCase()))
     setStudentList(newList)
-
   }
   const handlerComfimStudents = async () => {
     const studentIds = studentListChecked.map(student => student._id)
@@ -127,6 +128,7 @@ const HomeTeacher = () => {
     navigate(`/topic/${student}`)
   }
   return <>
+
     <Container maxWidth='2xl' sx={{ position: 'relative', mt: 2 }}>
       <Paper >
         <Toolbar sx={{
@@ -183,7 +185,7 @@ const HomeTeacher = () => {
               sx={{ ml: 1, width: 'auto' }}
               value={searchStudent}
               onChange={(e) => {
-                setSearchStudent(e.target.value)
+
                 handleSearchStudent(e.target.value)
               }}
               placeholder='Tìm kiếm...'
@@ -201,6 +203,7 @@ const HomeTeacher = () => {
             }
           </Paper>
         </Toolbar>
+
         <TableContainer>
           <Table sx={{ backgroundColor: 'secondary.main' }}>
             <TableHead>
@@ -315,6 +318,7 @@ const HomeTeacher = () => {
                   </TableRow>
                 ))
               }
+
             </TableBody>
           </Table>
         </TableContainer>

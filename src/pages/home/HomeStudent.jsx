@@ -26,7 +26,6 @@ const steps = ['Đăng kí giáo viên', 'Đăng kí đề tài', 'Bắt đầu 
 let teacherListDefault = []
 const HomeStudent = () => {
   const user = JSON.parse(localStorage.getItem('user'))
-  // localStorage.setItem('user', {})
   const [activeStep, setActiveStep] = useState(0)
   const [topicName, setTopicName] = useState('')
   const [topicTech, setTopicTech] = useState('')
@@ -71,10 +70,7 @@ const HomeStudent = () => {
     if (activeStep === 3) return false
     return true
   }
-  // const checkStatusButtonBack = () => {
-  //   if (activeStep === 0) return false
-  //   return true
-  // }
+
   const handleNext = async () => {
     if (teacherChecked === null && activeStep === 0) return
     if (activeStep === 1 && (topicName === '' || topicTech === '' || topicDescription === '')) return
@@ -347,12 +343,6 @@ const HomeStudent = () => {
         alignItems: 'center',
         justifyContent: 'flex-end'
       }}>
-        {/* <Button
-          variant={checkStatusButtonBack() ? 'contained' : 'disabled'}
-          color='secondary'
-          onClick={handleBack}>
-          Quay lại
-        </Button> */}
         {
           activeStep < 3 &&
           <Button
