@@ -15,6 +15,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { getDetailTopicById } from '~/apis/topicAPI'
+
 import { confirmTopic, updateTopic, deleteTopic, removeStudent } from '~/apis/topicAPI'
 
 const TopicTeacher = () => {
@@ -76,12 +77,15 @@ const TopicTeacher = () => {
       fetchTopic()
       toast.success(response.message)
     }
-    toast.error(response.message)
+    else toast.error(response.message)
   }
   return <>
+    <Box sx={{ m: 2 }}>
+      <Button variant='contained' color='error' onClick={() => navigate('/topic')}>Quay lại</Button>
+    </Box>
     <Box sx={{ display: 'flex', gap: 3, p: 2 }}>
       <Container sx={{ backgroundColor: 'secondary.main', p: 2, borderRadius: 1 }} maxWidth='md'>
-        <Typography variant='h5' gutterBottom>Thông tin đề tài</Typography>
+        <Typography variant='h6' sx={{ py: 3, fontWeight: 'bold' }}>Thông tin đề tài</Typography>
         <Alert severity={topic.process === 0 ? 'error' : 'success'}>Trạng thái: {topic.status[topic.process]}</Alert>
         <Divider />
         <TextField
@@ -131,9 +135,9 @@ const TopicTeacher = () => {
           </Button>
         </Box>
       </Container>
-      <Container sx={{ backgroundColor: 'secondary.main', p: 1, borderRadius: 1, mt: 2 }} maxWidth='md'>
+      <Container sx={{ backgroundColor: 'secondary.main', p: 1, borderRadius: 1 }} maxWidth='md'>
         <TableContainer>
-          <Typography variant='h5' gutterBottom>Thành Viên ({students.length})</Typography>
+          <Typography variant='h6' sx={{ py: 3, fontWeight: 'bold' }}>Thành Viên ({students.length})</Typography>
           <Divider />
           <Table>
             <TableHead>
@@ -161,6 +165,65 @@ const TopicTeacher = () => {
         </TableContainer>
       </Container>
     </Box >
+
+    <Container maxWidth='2xl' sx={{ mb: 6 }}>
+      <Box sx={{ display: 'flex', gap: 3, backgroundColor: 'secondary.main', borderRadius: 3 }}>
+        <TableContainer>
+          <Box sx={{ p: 3, display: 'flex', justifyContent: 'space-between' }}>
+            <Typography variant='h6' sx={{ fontWeight: 'bold' }}>Resource</Typography>
+          </Box>
+          <Divider />
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell sx={{ width: 10 }}>STT</TableCell>
+                <TableCell sx={{ width: 200 }}> Tiêu đề</TableCell>
+                <TableCell sx={{ width: 'auto' }}>Nội dung</TableCell>
+                <TableCell sx={{ width: 300 }}>Link</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell>1</TableCell>
+                <TableCell>Slide</TableCell>
+                <TableCell>Nội dung</TableCell>
+                <TableCell><img style={{ width: '100%', height: '100%', objectFit: 'cover' }} src='https://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1msOOR.img' /></TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>2</TableCell>
+                <TableCell>Document</TableCell>
+                <TableCell>Nội dung</TableCell>
+                <TableCell>https://www.google.com</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>2</TableCell>
+                <TableCell>Document</TableCell>
+                <TableCell>Nội dunghttps://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1msOOR.imghttps://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1msOOR.imghttps://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1msOOR.imghttps://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1msOOR.imghttps://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1msOOR.imghttps://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1msOOR.imghttps://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1msOOR.imghttps://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1msOOR.img</TableCell>
+                <TableCell></TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>2</TableCell>
+                <TableCell>Document</TableCell>
+                <TableCell>Nội dung</TableCell>
+                <TableCell>https://www.google.com</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>2</TableCell>
+                <TableCell>Document</TableCell>
+                <TableCell>Nội dung</TableCell>
+                <TableCell>https://www.google.com</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>2</TableCell>
+                <TableCell>Document</TableCell>
+                <TableCell>Nội dung</TableCell>
+                <TableCell>https://www.google.com</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
+    </Container >
   </>
 }
 export default TopicTeacher

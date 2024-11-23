@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
 import TextField from '@mui/material/TextField'
-import { Container } from '@mui/material'
+import Container from '@mui/material/Container'
 
 const Profile = () => {
   return (
@@ -27,8 +27,7 @@ const Profile = () => {
           alignItems: 'center',
           justifyContent: 'space-between',
           paddingBottom: 2,
-          gap: 1,
-
+          gap: 1
         }}>
           <Typography sx={{ paddingY: 3, paddingX: 2 }}>Profile Picture</Typography>
           <Divider />
@@ -54,7 +53,7 @@ const Profile = () => {
             backgroundColor: 'secondary.main',
             width: '100%',
             borderRadius: 3,
-            padding: 2,
+            padding: 2
           }}>
             <Typography sx={{ paddingY: 2, paddingX: 2, marginX: 3, fontWeight: 'bold', fontSize: '1rem' }}>Thông tin cá nhân</Typography>
             <Divider />
