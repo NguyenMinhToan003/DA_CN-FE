@@ -128,7 +128,6 @@ const HomeTeacher = () => {
     navigate(`/topic/${student}`)
   }
   return <>
-
     <Container maxWidth='2xl' sx={{ position: 'relative', mt: 2 }}>
       <Paper >
         <Toolbar sx={{
@@ -176,7 +175,7 @@ const HomeTeacher = () => {
                   Danh sách sinh viên
                 </Typography>
                 <Typography variant='body2' sx={{ color: 'text.secondary' }}>
-                  {studentList.length} sinh viên
+                  {studentList?.length} sinh viên
                 </Typography>
               </Box>
           }
@@ -236,7 +235,7 @@ const HomeTeacher = () => {
             </TableHead>
             <TableBody>
               {
-                studentList.map((student, index) => (
+                studentList?.map((student, index) => (
                   <TableRow key={index} sx={{
                     backgroundColor: studentListChecked.includes(student)
                       ? 'primary.more'
@@ -247,9 +246,8 @@ const HomeTeacher = () => {
                   }}>
                     <TableCell>
                       <Checkbox
-                        onChange={() => handleCheckStudent(student)}
-                        checked={studentListChecked.includes(student)}
-                      />
+                        onClick={() => handleCheckStudent(student)}
+                        checked={studentListChecked?.includes(student)} />
                     </TableCell>
                     <TableCell>
                       <Typography sx={{ whiteSpace: 'nowrap' }}>{student.name}</Typography>
@@ -264,7 +262,7 @@ const HomeTeacher = () => {
                       <Typography>
                         {
                           student?.topicId ?
-                            (student?.topic[0].name === '' ?
+                            (student?.topic[0]?.name === '' ?
                               <Button
                                 onClick={() => handleUpdateTopic(student.topicId)}
                                 variant='contained'
@@ -300,10 +298,10 @@ const HomeTeacher = () => {
                       {
                         !student?.topicId ? ''
                           : <Chip
-                            label={student?.topic[0].status[student?.topic[0]?.process]}
-                            color={student.topic[0].process === 0 ? 'warning'
-                              : student.topic[0].process === 1 ? 'primary'
-                                : student.topic[0].process === 2 ? 'success'
+                            label={student?.topic[0]?.status[student?.topic[0]?.process]}
+                            color={student?.topic[0]?.process === 0 ? 'warning'
+                              : student?.topic[0]?.process === 1 ? 'primary'
+                                : student?.topic[0]?.process === 2 ? 'success'
                                   : 'error'}
                           />
                       }
