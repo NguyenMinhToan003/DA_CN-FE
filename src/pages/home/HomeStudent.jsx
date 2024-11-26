@@ -22,10 +22,11 @@ import { createTopic, getTopicById } from '~/apis/topicAPI'
 import Tooltip from '@mui/material/Tooltip'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import { toast } from 'react-toastify'
+import { getStudentById } from '~/apis/studentAPI'
 const steps = ['Đăng kí giáo viên', 'Đăng kí đề tài', 'Bắt đầu đồ án']
 let teacherListDefault = []
 const HomeStudent = () => {
-  const user = JSON.parse(localStorage.getItem('user'))
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')))
   const [activeStep, setActiveStep] = useState(0)
   const [topicName, setTopicName] = useState('')
   const [topicTech, setTopicTech] = useState('')
@@ -59,8 +60,14 @@ const HomeStudent = () => {
       if (response?.process === 1) setActiveStep(3)
     }
   }
-
+  const fetchStudent = async () => {
+    const response = await getStudentById(user._id)
+    if (response._id) {
+      setUser(response)
+    }
+  }
   useEffect(() => {
+    fetchStudent()
     fetchData()
   }, [])
   const checkStatusButtonNext = () => {
@@ -91,13 +98,8 @@ const HomeStudent = () => {
     if (activeStep === 2) {
       await fetchData()
     }
-
     if (activeStep < 3)
       setActiveStep(activeStep + 1)
-  }
-  const handleBack = () => {
-    if (activeStep > 0)
-      setActiveStep(activeStep - 1)
   }
   const handerCheckedTeacher = (teacher) => () => {
     setTeacherChecked(teacher)

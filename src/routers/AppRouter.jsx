@@ -5,6 +5,7 @@ import Roomchats from '~/pages/Roomchats/Roomchats'
 import Chat from '~/pages/chat/Chat'
 import Profile from '~/pages/profile/Profile'
 import Login from '~/pages/auth/Login'
+import CreateResource from '~/pages/resources/Resource'
 import Topic from '~/pages/topic'
 const AppRouter = () => {
 
@@ -16,6 +17,7 @@ const AppRouter = () => {
         <Route path='topic/:id' element={<Topic />} />
         <Route path='profile' element={<Profile />} />
         <Route path='roomchats' element={<Roomchats />} />
+        <Route path='resource/create' element={<CreateResource />} />
         <Route path='roomchats/chat/:id' element={<Chat />} />
         <Route path='*' element={<Home />} />
       </Route>
