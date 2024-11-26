@@ -15,10 +15,15 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { getDetailTopicById } from '~/apis/topicAPI'
-
+import { useConfirm } from 'material-ui-confirm'
 import { confirmTopic, updateTopic, deleteTopic, removeStudent } from '~/apis/topicAPI'
+import AddIcon from '@mui/icons-material/Add'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline'
+import SaveIcon from '@mui/icons-material/Save'
 
 const TopicTeacher = () => {
+  const confirm = useConfirm()
   const navigate = useNavigate()
   const user = JSON.parse(localStorage.getItem('user'))
   const { id } = useParams()
@@ -46,48 +51,88 @@ const TopicTeacher = () => {
     fetchTopic()
   }, [])
   const handleConfimTopic = async () => {
-    const response = await confirmTopic(user._id, id)
-    if (response.acknowledged) {
-      fetchTopic()
-      toast.success('Xác nhận đề tài thành công')
-    }
+    confirm({
+      title: 'Đồng ý đề tài',
+      description: 'Xác nhận đồng ý với đề tài'
+    })
+      .then(async () => {
+        const response = await confirmTopic(user._id, id)
+        if (response.acknowledged) {
+          fetchTopic()
+          toast.success('Xác nhận đề tài thành công')
+        }
+      })
+      .catch(() => {
+      })
   }
   const handleDenyTopic = async () => {
-    const response = await deleteTopic(id, user._id)
-    if (response.acknowledged) {
-      navigate('/')
-      toast.success('Hủy đề tài thành công')
-    }
+    confirm({
+      title: 'Hủy đề tài',
+      description: 'Xác nhận hủy đề tài'
+    }).then(async () => {
+      const response = await deleteTopic(id, user._id)
+      if (response.acknowledged) {
+        toast.success('Hủy đề tài thành công')
+        navigate('/')
+      }
+      else toast.error(response.message)
+    })
+      .catch(() => {
+      })
   }
   const handleUpdateTopic = async () => {
-    const response = await updateTopic(topic.name, topic.description, topic.tech, topic.process, id, user._id)
-    if (response.modifiedCount > 0) {
-      fetchTopic()
-      toast.success('Cập nhật đề tài thành công')
-    }
-    else if (response.message) {
-      toast.error(response.message)
-    } else {
-      toast.warning('Chưa có thay đổi')
-    }
+    confirm({
+      title: 'Cập nhật đề tài',
+      description: 'Xác nhận Cập nhật thông tin đề tài'
+    })
+      .then(async () => {
+        const response = await updateTopic(topic.name, topic.description, topic.tech, topic.process, id, user._id)
+        if (response.modifiedCount > 0) {
+          fetchTopic()
+          toast.success('Cập nhật đề tài thành công')
+        }
+        else if (response.message) {
+          toast.error(response.message)
+        } else {
+          toast.warning('Chưa có thay đổi')
+        }
+      })
+      .catch(() => {
+      })
   }
-  const handleRemoveStudent = async (studentId) => {
-    const response = await removeStudent(id, studentId, user._id)
-    if (response.acknowledged) {
-      fetchTopic()
-      toast.success(response.message)
-    }
-    else toast.error(response.message)
+  const handleRemoveStudent = async (student) => {
+    confirm({
+      title: `Xóa sinh viên ${student.name}`,
+      description: 'Xác nhận xóa sinh viên khỏi đề tài'
+    }).then(async () => {
+      const response = await removeStudent(id, student._id, user._id)
+      if (response.acknowledged) {
+        fetchTopic()
+        toast.success(response.message)
+      }
+      else toast.error(response.message)
+    })
+      .catch(() => {
+      })
   }
   return <>
     <Box sx={{ m: 2 }}>
-      <Button variant='contained' color='error' onClick={() => navigate('/topic')}>Quay lại</Button>
+      <Button variant='contained' color='error' startIcon={<ArrowBackIcon />} onClick={() => navigate('/')}>Quay lại</Button>
     </Box>
-    <Box sx={{ display: 'flex', gap: 3, p: 2 }}>
-      <Container sx={{ backgroundColor: 'secondary.main', p: 2, borderRadius: 1 }} maxWidth='md'>
+    <Box sx={{
+      display: 'flex', gap: 3, p: 2, flexDirection: {
+        lg: 'row',
+        xs: 'column'
+      }
+    }}>
+      <Container sx={{ backgroundColor: 'secondary.main', p: 2, borderRadius: 1, width: '100%' }} >
         <Typography variant='h6' sx={{ py: 3, fontWeight: 'bold' }}>Thông tin đề tài</Typography>
-        <Alert severity={topic.process === 0 ? 'error' : 'success'}>Trạng thái: {topic.status[topic.process]}</Alert>
-        <Divider />
+        <Divider sx={{ mb: 3 }} />
+        <Alert severity={topic.process === 0 ? 'error' : 'success'}
+          sx={{ m: 3 }}>
+          Trạng thái: {topic.status[topic.process]}
+        </Alert>
+        <Divider sx={{ my: 3 }} />
         <TextField
           label='Tên đề tài'
           variant='outlined'
@@ -130,14 +175,20 @@ const TopicTeacher = () => {
 
           </Box>
           <Button variant='contained' color='primary'
-            onClick={handleUpdateTopic} >
-            Lưu
+            onClick={handleUpdateTopic}
+            startIcon={<SaveIcon />}>
+            Lưu lại thông tin đề tài
           </Button>
         </Box>
       </Container>
-      <Container sx={{ backgroundColor: 'secondary.main', p: 1, borderRadius: 1 }} maxWidth='md'>
+      <Container sx={{ backgroundColor: 'secondary.main', p: 1, borderRadius: 1, width: '100%' }} >
         <TableContainer>
-          <Typography variant='h6' sx={{ py: 3, fontWeight: 'bold' }}>Thành Viên ({students.length})</Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Typography variant='h6' sx={{ py: 3, fontWeight: 'bold' }}>Thành Viên ({students.length})</Typography>
+            <Box >
+              <Button variant='contained' sx={{ py: 1 }} startIcon={<AddIcon />}>Thêm thành viên</Button>
+            </Box>
+          </Box>
           <Divider />
           <Table>
             <TableHead>
@@ -155,7 +206,8 @@ const TopicTeacher = () => {
                     <TableCell>{student.name}</TableCell>
                     <TableCell>
                       <Button variant='contained' color='error'
-                        onClick={() => handleRemoveStudent(student._id)}>Hủy</Button>
+                        onClick={() => handleRemoveStudent(student)}
+                        startIcon={<RemoveCircleOutlineIcon />}>Hủy</Button>
                     </TableCell>
                   </TableRow>
                 ))
@@ -166,8 +218,8 @@ const TopicTeacher = () => {
       </Container>
     </Box >
 
-    <Container maxWidth='2xl' sx={{ mb: 6 }}>
-      <Box sx={{ display: 'flex', gap: 3, backgroundColor: 'secondary.main', borderRadius: 3 }}>
+    <Container sx={{ p: 1, minWidth: '100%', maxWidth: '100%' }} >
+      <Box sx={{ display: 'flex', gap: 3, backgroundColor: 'secondary.main', borderRadius: 3, minWidth: '100%' }}>
         <TableContainer>
           <Box sx={{ p: 3, display: 'flex', justifyContent: 'space-between' }}>
             <Typography variant='h6' sx={{ fontWeight: 'bold' }}>Resource</Typography>
@@ -179,45 +231,17 @@ const TopicTeacher = () => {
                 <TableCell sx={{ width: 10 }}>STT</TableCell>
                 <TableCell sx={{ width: 200 }}> Tiêu đề</TableCell>
                 <TableCell sx={{ width: 'auto' }}>Nội dung</TableCell>
-                <TableCell sx={{ width: 300 }}>Link</TableCell>
+                <TableCell sx={{ width: 300 }}>hình ảnh</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               <TableRow>
                 <TableCell>1</TableCell>
                 <TableCell>Slide</TableCell>
-                <TableCell>Nội dung</TableCell>
+                <TableCell>
+                  <a href='https://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1msOOR.img'>https://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1msOOR.img</a>
+                </TableCell>
                 <TableCell><img style={{ width: '100%', height: '100%', objectFit: 'cover' }} src='https://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1msOOR.img' /></TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>2</TableCell>
-                <TableCell>Document</TableCell>
-                <TableCell>Nội dung</TableCell>
-                <TableCell>https://www.google.com</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>2</TableCell>
-                <TableCell>Document</TableCell>
-                <TableCell>Nội dunghttps://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1msOOR.imghttps://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1msOOR.imghttps://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1msOOR.imghttps://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1msOOR.imghttps://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1msOOR.imghttps://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1msOOR.imghttps://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1msOOR.imghttps://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1msOOR.img</TableCell>
-                <TableCell></TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>2</TableCell>
-                <TableCell>Document</TableCell>
-                <TableCell>Nội dung</TableCell>
-                <TableCell>https://www.google.com</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>2</TableCell>
-                <TableCell>Document</TableCell>
-                <TableCell>Nội dung</TableCell>
-                <TableCell>https://www.google.com</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>2</TableCell>
-                <TableCell>Document</TableCell>
-                <TableCell>Nội dung</TableCell>
-                <TableCell>https://www.google.com</TableCell>
               </TableRow>
             </TableBody>
           </Table>

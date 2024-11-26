@@ -5,10 +5,10 @@ import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider } from '@mui/material/styles'
 import theme from './theme.js'
 import { ConfirmProvider } from 'material-ui-confirm'
-import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 import { socket } from '~/socket'
-import { Box, Button, Typography } from '@mui/material'
+import Button from '@mui/material/Button'
+import { Typography } from '@mui/material'
+
 const id = 1
 socket.emit('online', id)
 createRoot(document.getElementById('root')).render(
@@ -18,12 +18,11 @@ createRoot(document.getElementById('root')).render(
       <ConfirmProvider defaultOptions={
         {
           title: 'Thông báo',
-          confirmationText: <Button variant='contained' color='primary'>Xác nhận</Button>,
-          cancellationText: <Button variant='contained' color='error'>Hủy bỏ</Button>
+          confirmationText: 'Xác nhận',
+          cancellationText: <Typography color="error">Hủy</Typography>,
         }
       }>
         <App />
-        <ToastContainer />
       </ConfirmProvider>
     </BrowserRouter>
   </ThemeProvider>
