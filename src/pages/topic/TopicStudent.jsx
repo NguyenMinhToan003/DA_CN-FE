@@ -14,10 +14,11 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { getDetailTopicById } from '~/apis/topicAPI'
 import Button from '@mui/material/Button'
+import UploadResource from '~/components/popup/UploadResource'
 
 const Topic = () => {
   const { id } = useParams()
-
+  const [openUploadResource, setOpenUploadResource] = useState(false)
   const [topic, setTopic] = useState({
     name: '',
     tech: '',
@@ -45,6 +46,7 @@ const Topic = () => {
 
   return (
     <>
+      <UploadResource open={openUploadResource} onClose={() => setOpenUploadResource(false)} />
       <Box
         sx={{
           display: 'flex',
@@ -147,7 +149,7 @@ const Topic = () => {
               <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
                 Resource
               </Typography>
-              <Button variant="contained" color="primary" >
+              <Button variant="contained" color="primary" onClick={() => setOpenUploadResource(true)}>
                 Thêm mới
               </Button>
             </Box>
