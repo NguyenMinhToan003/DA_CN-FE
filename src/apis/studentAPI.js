@@ -4,10 +4,15 @@ export const student_teacher = async (id, teacherId) => {
   return response.data
 }
 export const getListStudentByTeacherId = async (id, status = -1, process = -1, topic = -1) => {
-  const response = await APIs.get(`/student/support-teacher/ds-sinh-vien?id=${id}&status=${status}&process=${process}&topic=${topic}`)
+  const response = await APIs.get(`/student/support-teacher/ds-sinh-vien-byId?id=${id}&status=${status}&process=${process}&topic=${topic}`)
   return response.data
 }
 export const getStudentById = async (id) => {
   const response = await APIs.post('/student', { id: id })
+  return response.data
+}
+export const getListStudentByTeacherKey = async (teacherId, key = '', topic = -1) => {
+  console.log(`/student/support-teacher/ds-sinh-vien-byKey?${key === '' ? `key=${key}&` : ''}teacherId=${teacherId}&topic=${topic}`)
+  const response = await APIs.get(`/student/support-teacher/ds-sinh-vien-byKey?${key !== '' ? `key=${key}&` : ''}teacherId=${teacherId}&topic=${topic}`)
   return response.data
 }

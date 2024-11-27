@@ -13,7 +13,7 @@ import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { getListStudentByTeacherId } from '~/apis/studentAPI'
 import { NavLink, useNavigate } from 'react-router-dom'
 import theme from '~/theme'
@@ -27,7 +27,6 @@ import { toast } from 'react-toastify'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import TextField from '@mui/material/TextField'
-import { LoadingArea } from '~/components/loading/LoadingArea'
 
 
 let listStudentDefault = []
@@ -177,7 +176,6 @@ const HomeTeacher = () => {
           justifyContent: 'space-between',
           position: 'sticky',
           top: theme.Layout.headerHeight,
-
           left: 0, right: 0, zIndex: 100,
           border: 1, borderColor: 'secondary.main',
           gap: 3,
@@ -217,8 +215,7 @@ const HomeTeacher = () => {
                 </Typography>
               </Box>
           }
-          < Box sx={{ display: 'flex', gap: 2 }}>
-
+          <Box sx={{ display: 'flex', gap: 3 }}>
             <Button
               startIcon={<FilterAltIcon />}
               variant='contained'
@@ -251,6 +248,7 @@ const HomeTeacher = () => {
 
             <TextField variant='standard' size='small' placeholder='Tìm kiếm' value={searchStudent}
               onChange={(e) => handleSearchStudent(e.target.value)}
+              sx={{ minWidth: 300 }}
               InputProps={{
                 endAdornment: searchStudent.length > 0
                   ? <IconButton onClick={(e) => handleSearchStudent('')}>

@@ -21,11 +21,15 @@ import AddIcon from '@mui/icons-material/Add'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline'
 import SaveIcon from '@mui/icons-material/Save'
+import AddMemberTopic from '~/components/popup/AddMemberTopic'
+
 
 const TopicTeacher = () => {
-  const confirm = useConfirm()
   const navigate = useNavigate()
+  const confirm = useConfirm()
   const user = JSON.parse(localStorage.getItem('user'))
+  const [openAddMember, setOpenAddMember] = useState(false)
+  const [isChange, setIsChange] = useState(false)
   const { id } = useParams()
   const [topic, setTopic] = useState({
     name: '',
@@ -34,7 +38,6 @@ const TopicTeacher = () => {
     process: 0,
     status: []
   })
-
   const [students, setStudents] = useState([])
   const fetchTopic = async () => {
     const response = await getDetailTopicById(id)
@@ -50,6 +53,10 @@ const TopicTeacher = () => {
   useEffect(() => {
     fetchTopic()
   }, [])
+  useEffect(() => {
+    fetchTopic()
+    setIsChange(false)
+  }, [isChange])
   const handleConfimTopic = async () => {
     confirm({
       title: 'Đồng ý đề tài',
@@ -116,8 +123,9 @@ const TopicTeacher = () => {
       })
   }
   return <>
+    <AddMemberTopic open={openAddMember} onClose={() => setOpenAddMember(false)} setIsChange={setIsChange} />
     <Box sx={{ m: 2 }}>
-      <Button variant='contained' color='error' startIcon={<ArrowBackIcon />} onClick={() => navigate('/')}>Quay lại</Button>
+      <Button variant='contained' color='error' startIcon={<ArrowBackIcon />} onClick={() => navigate(-1)}>Quay lại</Button>
     </Box>
     <Box sx={{
       display: 'flex', gap: 3, p: 2, flexDirection: {
@@ -125,7 +133,7 @@ const TopicTeacher = () => {
         xs: 'column'
       }
     }}>
-      <Container sx={{ backgroundColor: 'secondary.main', p: 2, borderRadius: 1, width: '100%' }} >
+      <Container sx={{ backgroundColor: 'secondary.main', p: 2, borderRadius: 1, width: '100%' }} maxWidth="xl">
         <Typography variant='h6' sx={{ py: 3, fontWeight: 'bold' }}>Thông tin đề tài</Typography>
         <Divider sx={{ mb: 3 }} />
         <Alert severity={topic.process === 0 ? 'error' : 'success'}
@@ -181,12 +189,14 @@ const TopicTeacher = () => {
           </Button>
         </Box>
       </Container>
-      <Container sx={{ backgroundColor: 'secondary.main', p: 1, borderRadius: 1, width: '100%' }} >
+      <Container sx={{ backgroundColor: 'secondary.main', p: 1, borderRadius: 1, width: '100%' }} maxWidth="xl">
         <TableContainer>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant='h6' sx={{ py: 3, fontWeight: 'bold' }}>Thành Viên ({students.length})</Typography>
             <Box >
-              <Button variant='contained' sx={{ py: 1 }} startIcon={<AddIcon />}>Thêm thành viên</Button>
+              <Button variant='contained' sx={{ py: 1 }} startIcon={<AddIcon />}
+                onClick={() => setOpenAddMember(true)}
+              >Thêm thành viên</Button>
             </Box>
           </Box>
           <Divider />
@@ -218,7 +228,7 @@ const TopicTeacher = () => {
       </Container>
     </Box >
 
-    <Container sx={{ p: 1, minWidth: '100%', maxWidth: '100%' }} >
+    <Container sx={{ p: 1, minWidth: '100%', maxWidth: '100%' }} maxWidth="xl" >
       <Box sx={{ display: 'flex', gap: 3, backgroundColor: 'secondary.main', borderRadius: 3, minWidth: '100%' }}>
         <TableContainer>
           <Box sx={{ p: 3, display: 'flex', justifyContent: 'space-between' }}>

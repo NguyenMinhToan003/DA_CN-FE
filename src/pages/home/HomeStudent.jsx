@@ -63,12 +63,13 @@ const HomeStudent = () => {
   const fetchStudent = async () => {
     const response = await getStudentById(user._id)
     if (response._id) {
-      setUser(response)
+      setUser((prev) => response)
+      console.log(response)
     }
   }
   useEffect(() => {
-    fetchStudent()
     fetchData()
+    fetchStudent()
   }, [])
   const checkStatusButtonNext = () => {
     if (teacherChecked === null && activeStep === 0) return false

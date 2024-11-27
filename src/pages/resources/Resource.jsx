@@ -1,11 +1,9 @@
-import {
-  Box,
-  TextField,
-  Typography,
-  Button,
-  IconButton,
-  Container
-} from '@mui/material'
+import Box from '@mui/material/Box'
+import Container from '@mui/material/Container'
+import Typography from '@mui/material/Typography'
+import TextField from '@mui/material/TextField'
+import Button from '@mui/material/Button'
+import IconButton from '@mui/material/IconButton'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import CloseIcon from '@mui/icons-material/Close'
 import TagIcon from '@mui/icons-material/Tag'
