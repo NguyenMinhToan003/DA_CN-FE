@@ -23,6 +23,8 @@ import Tooltip from '@mui/material/Tooltip'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import { toast } from 'react-toastify'
 import { getStudentById } from '~/apis/studentAPI'
+
+
 const steps = ['Đăng kí giáo viên', 'Đăng kí đề tài', 'Bắt đầu đồ án']
 let teacherListDefault = []
 const HomeStudent = () => {
@@ -64,7 +66,6 @@ const HomeStudent = () => {
     const response = await getStudentById(user._id)
     if (response._id) {
       setUser((prev) => response)
-      console.log(response)
     }
   }
   useEffect(() => {

@@ -128,7 +128,8 @@ const Header = ({ toggleNav, widthNav }) => {
             ml: 2, color: 'text.default',
             whiteSpace: 'nowrap'
           }} >
-            <NavLink to='/login' style={{ textDecoration: 'none', color: 'inherit' }}>
+            <NavLink
+              to='/login' style={{ textDecoration: 'none', color: 'inherit' }}>
               {user?.name}
             </NavLink>
           </Typography>

@@ -12,7 +12,6 @@ export const getStudentById = async (id) => {
   return response.data
 }
 export const getListStudentByTeacherKey = async (teacherId, key = '', topic = -1) => {
-  console.log(`/student/support-teacher/ds-sinh-vien-byKey?${key === '' ? `key=${key}&` : ''}teacherId=${teacherId}&topic=${topic}`)
   const response = await APIs.get(`/student/support-teacher/ds-sinh-vien-byKey?${key !== '' ? `key=${key}&` : ''}teacherId=${teacherId}&topic=${topic}`)
   return response.data
 }

@@ -36,7 +36,7 @@ const Nav = ({ widthNav, isMobile }) => {
         <NavLink to='/profile' className='navLink' >
           <Profile widthNav={widthNav} />
         </NavLink>
-        <NavLink to={`/topic/${user.topicId}`} className='navLink' >
+        <NavLink to={`/topic/${user?.topicId}`} className='navLink' >
           <Subject widthNav={widthNav} />
         </NavLink>
         <NavLink to='/resources' className='navLink' >
