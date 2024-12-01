@@ -40,20 +40,21 @@ const listFilter = [
 const HomeTeacher = () => {
   const navigate = useNavigate()
   const [iFilter, setIFilter] = useState(0)
-  const [loading, setLoading] = useState(false)
-  const [disabledButton, setDisableButton] = useState(false)
+  const [loadingFetch, setLoadingFetch] = useState(false)
+  const [loadingAction, setLoadingAction] = useState(false)
   const [open, setOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState(null)
   const user = JSON.parse(localStorage.getItem('user'))
   const [studentListChecked, setStudentListChecked] = useState([])
   const [studentList, setStudentList] = useState([])
   const [searchStudent, setSearchStudent] = useState('')
+
   const fetchStudentList = async () => {
-    setLoading(true)
+    setLoadingFetch(true)
     const response = await getListStudentByTeacherId(user._id)
     listStudentDefault = response
     setStudentList(response)
-    setLoading(false)
+    setLoadingFetch(false)
   }
   useEffect(() => {
     fetchStudentList()
@@ -86,36 +87,48 @@ const HomeTeacher = () => {
     setStudentList(newList)
   }
   const handlerComfimStudents = async () => {
+    setLoadingAction(true)
     const studentIds = studentListChecked.map(student => student._id)
     const response = await confirmStudents(user._id, studentIds)
-    if (response.acknowledged > 0) {
+    if (response?.acknowledged > 0) {
       fetchStudentList()
       setStudentListChecked([])
-      if (response.modifiedCount > 0) {
-        toast.success(`${response.modifiedCount} sinh viên đã được xác nhận`)
+      if (response?.modifiedCount > 0) {
+        toast.success(`${response?.modifiedCount} sinh viên đã được xác nhận`)
       }
       else {
         toast.warning('Chưa có thay đổi')
       }
     }
+    setLoadingAction(false)
   }
   const handlerConfimTopics = async () => {
+    setLoadingAction(true)
     if (studentListChecked.length === 0 && studentListChecked.length > 1) return
     const topicId = studentListChecked[0].topicId
     const response = await confirmTopic(user._id, topicId)
-    if (response.acknowledged === true) {
-      setStudentListChecked([])
-      fetchStudentList()
-      setStudentListChecked([])
-      if (response.modifiedCount > 0) {
-        toast.success(`${response.modifiedCount} sinh viên đã được xác nhận đề tài`)
-      }
-      else {
-        toast.warning('Chưa có thay đổi')
-      }
-    }
+      .then((response) => {
+        if (response?.acknowledged === true) {
+          setStudentListChecked([])
+          fetchStudentList()
+          setStudentListChecked([])
+          if (response?.modifiedCount > 0) {
+            toast.success(`${response?.modifiedCount} sinh viên đã được xác nhận đề tài`)
+          }
+          else {
+            toast.warning('Chưa có thay đổi')
+          }
+        }
+      })
+      .catch(() => {
+        toast.error(response?.message)
+      })
+      .finally(() => {
+        setLoadingAction(false)
+      })
   }
   const handleJoinTopic = async () => {
+
     let studentIds = []
     let topicId = ''
     let check = true
@@ -131,37 +144,52 @@ const HomeTeacher = () => {
       studentIds.push(student._id)
     })
     if (check) {
+      setLoadingAction(true)
       const response = await joinTopic(topicId, studentIds)
-      if (response.modifiedCount > 0) {
-        fetchStudentList()
-        setStudentListChecked([])
-        toast.success(response.message)
-      }
-      else {
-        toast.error(response.message)
-      }
+        .then((response) => {
+          if (response?.modifiedCount > 0) {
+            fetchStudentList()
+            setStudentListChecked([])
+            toast.success(response?.message)
+          }
+        })
+        .catch(() => {
+          toast.error(response?.message)
+        })
+        .finally(() => {
+          setLoadingAction(false)
+        })
     }
     else {
       toast.error('Không thể làm nhóm được')
     }
   }
   const handleCreateTopic = async (studentId) => {
+    setLoadingAction(true)
     const response = await createEmptyTopic(user._id, studentId)
-    if (response.insertedId) {
-      navigate(`/topic/${response.insertedId}`)
-      toast.info('Đang tạo đề tài')
-    }
+      .then((response) => {
+        if (response?.insertedId) {
+          navigate(`/topic/${response?.insertedId}`)
+          toast.info('Đang tạo đề tài')
+        }
+      })
+      .catch(() => {
+        toast.error('Không thể tạo đề tài')
+      })
+      .finally(() => {
+        setLoadingAction(false)
+      })
   }
   const handleUpdateTopic = async (student) => {
     navigate(`/topic/${student}`)
   }
   const handlFilter = async (index, status, process, topic) => {
-    setLoading(true)
+    setLoadingFetch(true)
     setIFilter(index)
     handleClose()
     const response = await getListStudentByTeacherId(user._id, status, process, topic)
     setStudentList((prev) => response)
-    setLoading(false)
+    setLoadingFetch(false)
   }
   return <>
     <Container maxWidth='2xl' sx={{ position: 'relative', mt: 2 }} >
@@ -194,10 +222,11 @@ const HomeTeacher = () => {
                   sx={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>
                   {studentListChecked.length} chọn
                 </Typography>
-                <Button variant='contained' onClick={handlerComfimStudents} color='success'>Nhận sinh viên</Button>
-                <Button variant='contained' onClick={handleJoinTopic}>Nhóm</Button>
-                <Button variant='contained' onClick={handlerConfimTopics} color='warning'>Xác nhận Đề tài</Button>
+                <Button disabled={loadingAction} variant='contained' onClick={handlerComfimStudents} color='success'>Nhận sinh viên</Button>
+                <Button disabled={loadingAction} variant='contained' onClick={handleJoinTopic}>Nhóm</Button>
+                <Button disabled={loadingAction} variant='contained' onClick={handlerConfimTopics} color='warning'>Xác nhận Đề tài</Button>
                 <Button
+                  disabled={loadingAction}
                   variant='contained'
                   color='error'
                   onClick={() => setStudentListChecked([])}>
@@ -217,6 +246,7 @@ const HomeTeacher = () => {
           }
           <Box sx={{ display: 'flex', gap: 3 }}>
             <Button
+
               startIcon={<FilterAltIcon />}
               variant='contained'
               color='warning'
@@ -288,7 +318,7 @@ const HomeTeacher = () => {
                   <Typography>Tiến trình</Typography>
                 </TableCell>
                 <TableCell sx={{ width: 10 }}>
-                  <Typography>Chờ</Typography>
+                  <Typography>Trạng thái</Typography>
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -383,7 +413,7 @@ const HomeTeacher = () => {
                   <TableRow >
                     <TableCell colSpan={6}>
                       {
-                        loading === true
+                        loadingFetch === true
                           ? <Typography textAlign='center' color='info' fontWeight='bold'>Loading..</Typography>
                           : <Typography textAlign='center' color='error' fontWeight='bold'>Empty</Typography>
                       }

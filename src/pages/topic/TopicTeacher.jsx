@@ -22,11 +22,13 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline'
 import SaveIcon from '@mui/icons-material/Save'
 import AddMemberTopic from '~/components/popup/AddMemberTopic'
-
+import { getDsResource } from '~/apis/resourceAPI'
+import theme from '~/theme'
 
 const TopicTeacher = () => {
   const navigate = useNavigate()
   const confirm = useConfirm()
+  const [loading, setLoading] = useState(false)
   const user = JSON.parse(localStorage.getItem('user'))
   const [openAddMember, setOpenAddMember] = useState(false)
   const [isChange, setIsChange] = useState(false)
@@ -38,20 +40,32 @@ const TopicTeacher = () => {
     process: 0,
     status: []
   })
+  const [resources, setResources] = useState([])
   const [students, setStudents] = useState([])
   const fetchTopic = async () => {
     const response = await getDetailTopicById(id)
-    setTopic(() => ({
-      name: response.name,
-      tech: response.tech,
-      description: response.description,
-      process: response.process,
-      status: response.status
-    }))
-    setStudents(response.students)
+    if (response) {
+      setTopic(() => ({
+        name: response?.name,
+        tech: response?.tech,
+        description: response?.description,
+        process: response?.process,
+        status: response?.status
+      }))
+      setStudents(response?.students)
+    }
+  }
+  const fetchResources = async () => {
+    setLoading(true)
+    const response = await getDsResource(id)
+    if (response) {
+      setResources(response)
+      setLoading(false)
+    }
   }
   useEffect(() => {
     fetchTopic()
+    fetchResources()
   }, [])
   useEffect(() => {
     fetchTopic()
@@ -63,8 +77,9 @@ const TopicTeacher = () => {
       description: 'Xác nhận đồng ý với đề tài'
     })
       .then(async () => {
-        const response = await confirmTopic(user._id, id)
-        if (response.acknowledged) {
+        const response = await updateTopic(topic.name, topic.description, topic.tech, topic.process, id, user._id)
+        response = await confirmTopic(user._id, id)
+        if (response?.acknowledged) {
           fetchTopic()
           toast.success('Xác nhận đề tài thành công')
         }
@@ -88,23 +103,27 @@ const TopicTeacher = () => {
       })
   }
   const handleUpdateTopic = async () => {
+    const response = await updateTopic(topic.name, topic.description, topic.tech, topic.process, id, user._id)
+    if (response?.modifiedCount > 0) {
+      fetchTopic()
+      toast.success('Cập nhật đề tài thành công')
+    }
+    else if (response.message) {
+      toast.error(response.message)
+    } else {
+      toast.warning('Chưa có thay đổi')
+    }
+  }
+  const handleClickImage = (url) => {
     confirm({
-      title: 'Cập nhật đề tài',
-      description: 'Xác nhận Cập nhật thông tin đề tài'
+      title: 'Ảnh',
+      description: <img src={url} alt="media" style={{ width: 500, height: 500, objectFit: 'cover' }} />,
+      confirmationText: 'Đóng',
+      cancellationText: 'Mỏ ảnh ở tab mới',
     })
-      .then(async () => {
-        const response = await updateTopic(topic.name, topic.description, topic.tech, topic.process, id, user._id)
-        if (response.modifiedCount > 0) {
-          fetchTopic()
-          toast.success('Cập nhật đề tài thành công')
-        }
-        else if (response.message) {
-          toast.error(response.message)
-        } else {
-          toast.warning('Chưa có thay đổi')
-        }
-      })
+      .then(() => { })
       .catch(() => {
+        window.open(url, '_blank')
       })
   }
   const handleRemoveStudent = async (student) => {
@@ -113,7 +132,7 @@ const TopicTeacher = () => {
       description: 'Xác nhận xóa sinh viên khỏi đề tài'
     }).then(async () => {
       const response = await removeStudent(id, student._id, user._id)
-      if (response.acknowledged) {
+      if (response?.acknowledged) {
         fetchTopic()
         toast.success(response.message)
       }
@@ -124,7 +143,12 @@ const TopicTeacher = () => {
   }
   return <>
     <AddMemberTopic open={openAddMember} onClose={() => setOpenAddMember(false)} setIsChange={setIsChange} />
-    <Box sx={{ m: 2 }}>
+    <Box sx={{
+      m: 2, position: 'sticky',
+      top: theme.Layout.headerHeight,
+      backgroundColor: 'background.default',
+      zIndex: 100
+    }}>
       <Button variant='contained' color='error' startIcon={<ArrowBackIcon />} onClick={() => navigate(-1)}>Quay lại</Button>
     </Box>
     <Box sx={{
@@ -167,7 +191,7 @@ const TopicTeacher = () => {
         <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 1, mt: 2 }}>
           <Box>
             {
-              topic.process === 0 ?
+              topic?.process === 0 ?
                 <Box>
                   <Button variant='contained' color='error' sx={{ mr: 1 }}
                     onClick={handleDenyTopic}>
@@ -209,26 +233,44 @@ const TopicTeacher = () => {
               </TableRow>
             </TableHead>
             <TableBody>
+
               {
-                students.map((student, index) => (
-                  <TableRow key={student._id}>
-                    <TableCell>{student.studentCode}</TableCell>
-                    <TableCell>{student.name}</TableCell>
-                    <TableCell>
-                      <Button variant='contained' color='error'
-                        onClick={() => handleRemoveStudent(student)}
-                        startIcon={<RemoveCircleOutlineIcon />}>Hủy</Button>
-                    </TableCell>
-                  </TableRow>
-                ))
+                students?.length > 0
+                  ? <>
+                    {
+                      students.map((student, index) => (
+                        <>
+                          <TableRow >
+                            <TableCell>{student.studentCode}</TableCell>
+                            <TableCell>{student.name}</TableCell>
+                            <TableCell>
+                              <Button variant='contained' color='error'
+                                onClick={() => handleRemoveStudent(student)}
+                                startIcon={<RemoveCircleOutlineIcon />}>Hủy</Button>
+                            </TableCell>
+                          </TableRow>
+                        </>
+
+                      ))
+                    }
+                  </>
+                  :
+                  <TableCell colSpan={3} align='center'>
+                    {
+                      loading === true
+                        ? <Typography textAlign='center' color='info' fontWeight='bold'>Loading..</Typography>
+                        : <Typography textAlign='center' color='error' fontWeight='bold'>Empty</Typography>
+                    }
+                  </TableCell>
               }
+
             </TableBody>
           </Table>
         </TableContainer>
       </Container>
     </Box >
 
-    <Container sx={{ p: 1, minWidth: '100%', maxWidth: '100%' }} maxWidth="xl" >
+    <Container sx={{ p: 1, minWidth: '100%', maxWidth: '100%', mb: 3 }} maxWidth="xl" >
       <Box sx={{ display: 'flex', gap: 3, backgroundColor: 'secondary.main', borderRadius: 3, minWidth: '100%' }}>
         <TableContainer>
           <Box sx={{ p: 3, display: 'flex', justifyContent: 'space-between' }}>
@@ -241,18 +283,48 @@ const TopicTeacher = () => {
                 <TableCell sx={{ width: 10 }}>STT</TableCell>
                 <TableCell sx={{ width: 200 }}> Tiêu đề</TableCell>
                 <TableCell sx={{ width: 'auto' }}>Nội dung</TableCell>
-                <TableCell sx={{ width: 300 }}>hình ảnh</TableCell>
+                <TableCell sx={{ width: 600 }}>hình ảnh</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              <TableRow>
-                <TableCell>1</TableCell>
-                <TableCell>Slide</TableCell>
-                <TableCell>
-                  <a href='https://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1msOOR.img'>https://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1msOOR.img</a>
-                </TableCell>
-                <TableCell><img style={{ width: '100%', height: '100%', objectFit: 'cover' }} src='https://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1msOOR.img' /></TableCell>
-              </TableRow>
+              {
+                resources.length > 0 ?
+                  <>{
+                    resources.map((resource, index) => (
+                      <TableRow key={resource._id}>
+                        <TableCell>{index + 1}</TableCell>
+                        <TableCell>{resource.name}</TableCell>
+                        <TableCell>{resource.description}</TableCell>
+                        <TableCell>
+                          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                            {
+                              resource.url.length > 0
+                                ? <>
+                                  {
+                                    resource.url.map((url, index) => (
+                                      <img key={index} src={url} alt="media" style={{ width: 100, height: 100, objectFit: 'cover', cursor: 'pointer' }}
+                                        onClick={() => handleClickImage(url)} />
+                                    ))
+                                  }
+                                </>
+                                : ''
+                            }
+                          </Box>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  }
+                  </>
+                  : <TableRow>
+                    <TableCell colSpan={4} align='center'>
+                      {
+                        loading === true
+                          ? <Typography textAlign='center' color='info' fontWeight='bold'>Loading..</Typography>
+                          : <Typography textAlign='center' color='error' fontWeight='bold'>Empty</Typography>
+                      }
+                    </TableCell>
+                  </TableRow>
+              }
             </TableBody>
           </Table>
         </TableContainer>

@@ -13,10 +13,12 @@ import { toast } from 'react-toastify'
 import HighlightOffIcon from '@mui/icons-material/HighlightOff'
 import { uploadResource } from '~/apis/resourceAPI'
 import { useParams } from 'react-router-dom'
-const UploadResource = ({ open, onClose }) => {
+import AutorenewIcon from '@mui/icons-material/Autorenew'
+
+const UploadResource = ({ open, onClose, setIsChange }) => {
   const param = useParams()
   const topicId = param.id
-  const profile = { _id: '123' }
+  const profile = JSON.parse(localStorage.getItem('user'))
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [mediaPrev, setMediaPrev] = useState([])
@@ -26,7 +28,7 @@ const UploadResource = ({ open, onClose }) => {
   const handleUploadFile = (e) => {
     const files = e.target.files
     if (!files || files.length === 0) return
-    const newMediaUpload = Array.from(files)
+    const newMediaUpload = [...files]
     const newMediaPrev = newMediaUpload.map((file) => URL.createObjectURL(file))
 
     setMediaUpload((prev) => [...prev, ...newMediaUpload])
@@ -48,15 +50,13 @@ const UploadResource = ({ open, onClose }) => {
     setContent('')
     setMediaPrev([])
     setMediaUpload([])
-    setHastag([])
   }
 
   const handleSubmit = async () => {
-    // if (!title || !content || mediaUpload.length === 0) {
-    //   toast.error('Điền đầy đủ thông tin và upload media.')
-    //   return
-    // }
-
+    if (!title || !content || mediaUpload.length === 0) {
+      toast.error('Điền đầy đủ thông tin và upload media.')
+      return
+    }
     try {
       setLoading(true)
       const data = new FormData()
@@ -68,6 +68,7 @@ const UploadResource = ({ open, onClose }) => {
       const response = await uploadResource(data)
       if (response.acknowledged) {
         toast.success(response.message)
+        setIsChange(true)
       } else {
         toast.error(response.message)
       }
@@ -100,13 +101,14 @@ const UploadResource = ({ open, onClose }) => {
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
                   Create Resource
                 </Typography>
-                <IconButton onClick={onClose}  >
+                <IconButton onClick={onClose} disabled={loading}>
                   <HighlightOffIcon color='error' />
                 </IconButton>
               </Box>
               <Divider sx={{ mb: 3 }} />
               <TextField
                 value={title}
+                autoFocus
                 onChange={(e) => setTitle(e.target.value)}
                 fullWidth
                 margin="normal"
@@ -139,7 +141,6 @@ const UploadResource = ({ open, onClose }) => {
                 multiple
                 onChange={handleUploadFile}
               />
-
               {mediaPrev.length > 0 && (
                 <Box
                   sx={{
@@ -202,7 +203,7 @@ const UploadResource = ({ open, onClose }) => {
             </Box>
 
             <Button
-              startIcon={<CheckCircleOutlineIcon />}
+              startIcon={loading ? <AutorenewIcon /> : <CheckCircleOutlineIcon />}
               sx={{ mt: 3, width: '100%', p: 2, color: 'third.main', fontWeight: 'bold' }}
               variant="contained"
               color="success"
@@ -211,8 +212,8 @@ const UploadResource = ({ open, onClose }) => {
             >
               {loading ? 'Posting...' : 'Post Now'}
             </Button>
-          </Container>
-        </Box>
+          </Container >
+        </Box >
       )
     }
   </>

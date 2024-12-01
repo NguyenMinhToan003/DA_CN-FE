@@ -15,9 +15,13 @@ import { useParams } from 'react-router-dom'
 import { getDetailTopicById } from '~/apis/topicAPI'
 import Button from '@mui/material/Button'
 import UploadResource from '~/components/popup/UploadResource'
+import { getDsResource } from '~/apis/resourceAPI'
+import { useConfirm } from 'material-ui-confirm'
 
 const Topic = () => {
   const { id } = useParams()
+  const confirm = useConfirm()
+  const [isChange, setIsChange] = useState(false)
   const [openUploadResource, setOpenUploadResource] = useState(false)
   const [topic, setTopic] = useState({
     name: '',
@@ -28,6 +32,7 @@ const Topic = () => {
   })
 
   const [students, setStudents] = useState([])
+  const [resources, setResources] = useState([])
   const fetchTopic = async () => {
     const response = await getDetailTopicById(id)
     setTopic({
@@ -39,14 +44,32 @@ const Topic = () => {
     })
     setStudents(response.students)
   }
-
+  const fetchResources = async () => {
+    const response = await getDsResource(id)
+    setResources(response)
+  }
   useEffect(() => {
     fetchTopic()
+    fetchResources()
   }, [])
-
+  useEffect(() => {
+    fetchResources()
+  }, [isChange])
+  const handleClickImage = (url) => {
+    confirm({
+      title: 'Ảnh',
+      description: <img src={url} alt="media" style={{ width: 500, height: 500, objectFit: 'cover' }} />,
+      confirmationText: 'Đóng',
+      cancellationText: 'Mỏ ảnh ở tab mới'
+    })
+      .then(() => { })
+      .catch(() => {
+        window.open(url, '_blank')
+      })
+  }
   return (
     <>
-      <UploadResource open={openUploadResource} onClose={() => setOpenUploadResource(false)} />
+      <UploadResource open={openUploadResource} onClose={() => setOpenUploadResource(false)} setIsChange={setIsChange} />
       <Box
         sx={{
           display: 'flex',
@@ -160,11 +183,29 @@ const Topic = () => {
                   <TableCell sx={{ width: 10 }}>STT</TableCell>
                   <TableCell sx={{ width: 200 }}>Tiêu đề</TableCell>
                   <TableCell sx={{ width: 'auto' }}>Nội dung</TableCell>
-                  <TableCell sx={{ width: 300 }}>Link</TableCell>
+                  <TableCell sx={{ width: 600 }}>Link</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {/* Sample Rows */}
+                {
+                  resources.map((resource, index) => (
+                    <TableRow key={resource._id}>
+                      <TableCell>{index + 1}</TableCell>
+                      <TableCell>{resource.name}</TableCell>
+                      <TableCell>{resource.description}</TableCell>
+                      <TableCell>
+                        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                          {
+                            resource.url.map((url, index) => (
+                              <img key={index} src={url} alt="media" style={{ width: 100, height: 100, objectFit: 'cover', cursor: 'pointer' }}
+                                onClick={() => handleClickImage(url)} />
+                            ))
+                          }
+                        </Box>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                }
               </TableBody>
             </Table>
           </TableContainer>

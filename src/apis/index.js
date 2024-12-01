@@ -19,12 +19,13 @@ api.interceptors.response.use(
   response => response,
   error => {
     if (error.response.status === StatusCodes.UNAUTHORIZED) {
-      window.location = '/login'
+      toast.error(error.response.data.message)
     }
-    if (error.response.status === StatusCodes.BAD_REQUEST) {
-      toast.error(error.response.data.message.details[0].message)
+    else if (error.response.status === StatusCodes.BAD_REQUEST) {
+      toast.error(error.response.data.message)
     }
   }
+
 )
 
 export const APIs = api
