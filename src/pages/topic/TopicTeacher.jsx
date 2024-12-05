@@ -77,8 +77,8 @@ const TopicTeacher = () => {
       description: 'Xác nhận đồng ý với đề tài'
     })
       .then(async () => {
-        const response = await updateTopic(topic.name, topic.description, topic.tech, topic.process, id, user._id)
-        response = await confirmTopic(user._id, id)
+        await updateTopic(topic.name, topic.description, topic.tech, topic.process, id, user._id)
+        const response = await confirmTopic(user._id, id)
         if (response?.acknowledged) {
           fetchTopic()
           toast.success('Xác nhận đề tài thành công')
@@ -117,9 +117,15 @@ const TopicTeacher = () => {
   const handleClickImage = (url) => {
     confirm({
       title: 'Ảnh',
-      description: <img src={url} alt="media" style={{ width: 500, height: 500, objectFit: 'cover' }} />,
+      description: <Box sx={{ maxWidth: 200, maxHeight: 200 }}>
+        <img src={url} alt='media' style={{
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover'
+        }} />
+      </Box>,
       confirmationText: 'Đóng',
-      cancellationText: 'Mỏ ảnh ở tab mới',
+      cancellationText: 'Mỏ ảnh ở tab mới'
     })
       .then(() => { })
       .catch(() => {
@@ -147,7 +153,8 @@ const TopicTeacher = () => {
       m: 2, position: 'sticky',
       top: theme.Layout.headerHeight,
       backgroundColor: 'background.default',
-      zIndex: 100
+      zIndex: 10,
+      py: 1
     }}>
       <Button variant='contained' color='error' startIcon={<ArrowBackIcon />} onClick={() => navigate(-1)}>Quay lại</Button>
     </Box>
@@ -157,7 +164,7 @@ const TopicTeacher = () => {
         xs: 'column'
       }
     }}>
-      <Container sx={{ backgroundColor: 'secondary.main', p: 2, borderRadius: 1, width: '100%' }} maxWidth="xl">
+      <Container sx={{ backgroundColor: 'secondary.main', p: 2, borderRadius: 1, width: '100%' }} maxWidth='xl'>
         <Typography variant='h6' sx={{ py: 3, fontWeight: 'bold' }}>Thông tin đề tài</Typography>
         <Divider sx={{ mb: 3 }} />
         <Alert severity={topic.process === 0 ? 'error' : 'success'}
@@ -213,7 +220,7 @@ const TopicTeacher = () => {
           </Button>
         </Box>
       </Container>
-      <Container sx={{ backgroundColor: 'secondary.main', p: 1, borderRadius: 1, width: '100%' }} maxWidth="xl">
+      <Container sx={{ backgroundColor: 'secondary.main', p: 1, borderRadius: 1, width: '100%' }} maxWidth='xl'>
         <TableContainer>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant='h6' sx={{ py: 3, fontWeight: 'bold' }}>Thành Viên ({students.length})</Typography>
@@ -270,7 +277,7 @@ const TopicTeacher = () => {
       </Container>
     </Box >
 
-    <Container sx={{ p: 1, minWidth: '100%', maxWidth: '100%', mb: 3 }} maxWidth="xl" >
+    <Container sx={{ p: 1, minWidth: '100%', maxWidth: '100%', mb: 3 }} maxWidth='xl' >
       <Box sx={{ display: 'flex', gap: 3, backgroundColor: 'secondary.main', borderRadius: 3, minWidth: '100%' }}>
         <TableContainer>
           <Box sx={{ p: 3, display: 'flex', justifyContent: 'space-between' }}>
@@ -283,7 +290,7 @@ const TopicTeacher = () => {
                 <TableCell sx={{ width: 10 }}>STT</TableCell>
                 <TableCell sx={{ width: 200 }}> Tiêu đề</TableCell>
                 <TableCell sx={{ width: 'auto' }}>Nội dung</TableCell>
-                <TableCell sx={{ width: 600 }}>hình ảnh</TableCell>
+                <TableCell sx={{ width: 600 }}>Resource</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -302,7 +309,7 @@ const TopicTeacher = () => {
                                 ? <>
                                   {
                                     resource.url.map((url, index) => (
-                                      <img key={index} src={url} alt="media" style={{ width: 100, height: 100, objectFit: 'cover', cursor: 'pointer' }}
+                                      <img key={index} src={url} alt='media' style={{ width: 100, height: 100, objectFit: 'cover', cursor: 'pointer', border: '1px solid #ccc' }}
                                         onClick={() => handleClickImage(url)} />
                                     ))
                                   }

@@ -23,12 +23,13 @@ import Tooltip from '@mui/material/Tooltip'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import { toast } from 'react-toastify'
 import { getStudentById } from '~/apis/studentAPI'
+import { NavLink } from 'react-router-dom'
 
 
 const steps = ['Đăng kí giáo viên', 'Đăng kí đề tài', 'Bắt đầu đồ án']
 let teacherListDefault = []
 const HomeStudent = () => {
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')))
+  const [user, setUser] = useState({})
   const [activeStep, setActiveStep] = useState(0)
   const [topicName, setTopicName] = useState('')
   const [topicTech, setTopicTech] = useState('')
@@ -38,39 +39,33 @@ const HomeStudent = () => {
   const [teacherList, setTeacherList] = useState([])
   const [topicOwner, setTopicOwner] = useState({})
   const fetchData = async () => {
-    const teacher = await getTeachers()
-    setTeacherList(teacher)
-    teacherListDefault = teacher
-    teacher.forEach(teacher => {
-      if (teacher._id === user.teacherId) {
+    const userLocal = JSON.parse(localStorage.getItem('user'))
+    const userFetch = await getStudentById(userLocal?._id)
+    setUser(userFetch)
+    const teachers = await getTeachers()
+    setTeacherList(teachers)
+    teacherListDefault = teachers
+    teachers.forEach(teacher => {
+      if (teacher._id === userFetch.teacherId) {
         setTeacherChecked(teacher)
       }
-      if (user.status === 1) {
-        setActiveStep(1)
-      }
     })
+    if (userFetch.status === 1) {
+      setActiveStep(1)
+    }
 
-    if (user.topicId) {
-      const response = await getTopicById(user.topicId)
-      if (response._id) {
-        setTopicOwner(response)
-        setTopicName(response.name)
-        setTopicTech(response.tech)
-        setTopicDescription(response.description)
-        setActiveStep(2)
-      }
-      if (response?.process === 1) setActiveStep(3)
+    if (userFetch.topicId) {
+      setTopicOwner(userFetch.topic)
+      setTopicName(userFetch.topic.name)
+      setTopicTech(userFetch.topic.tech)
+      setTopicDescription(userFetch.topic.description)
+      setActiveStep(2)
+      if (userFetch?.topic?.process === 1) setActiveStep(3)
     }
   }
-  const fetchStudent = async () => {
-    const response = await getStudentById(user._id)
-    if (response._id) {
-      setUser((prev) => response)
-    }
-  }
+
   useEffect(() => {
     fetchData()
-    fetchStudent()
   }, [])
   const checkStatusButtonNext = () => {
     if (teacherChecked === null && activeStep === 0) return false
@@ -301,7 +296,7 @@ const HomeStudent = () => {
                         Mã đề tài:{topicOwner?._id}
                       </Button>
                     </Tooltip>
-                    <Typography>Tên đề tài: {topicOwner?.name}</Typography>
+
                     <Typography>Công nghệ: {topicOwner?.tech}</Typography>
                     <Typography>Mô tả: {topicOwner?.description}</Typography>
                     <Typography>Giáo viên hướng dẫn: {teacherChecked?.name}</Typography>
@@ -354,6 +349,17 @@ const HomeStudent = () => {
             color='primary'
             onClick={handleNext}>
             Tiếp theo
+          </Button>
+        }
+        {
+          activeStep === 3 &&
+          <Button
+            variant='contained'
+            color='primary'
+            component={NavLink}
+            to={`/topic/${topicOwner?._id}`}
+          >
+            Xem chi tiết
           </Button>
         }
       </Box>

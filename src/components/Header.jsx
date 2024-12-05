@@ -1,40 +1,45 @@
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
 import theme from '~/theme'
-import InputBase from '@mui/material/InputBase'
-import Paper from '@mui/material/Paper'
 import Avatar from '@mui/material/Avatar'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import ThemeMode from '~/components/ThemeMode'
 import MenuIcon from '@mui/icons-material/Menu'
-import CloseIcon from '@mui/icons-material/Close'
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-import { useRef, useState } from 'react'
-import Button from '@mui/material/Button'
+import { getNotifications } from '~/apis/notificationAPI'
 import Badge from '@mui/material/Badge'
-import Menu from '@mui/material/Menu'
-import MenuItem from '@mui/material/MenuItem'
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone'
 import { NavLink } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { getStudentById } from '../apis/studentAPI'
 
 const Header = ({ toggleNav, widthNav }) => {
-  const user = JSON.parse(localStorage.getItem('user'))
-  const [key, setKey] = useState('')
-  const refSearch = useRef(null)
-  const [anchorEl, setAnchorEl] = useState(null)
-  const [selectedOption, setSelectedOption] = useState('SinhVien')
-  const handleSearch = () => {
-    setKey('')
-    refSearch.current.lastElementChild.focus()
+  const userLocal = JSON.parse(localStorage.getItem('user'))
+  const [user, setUser] = useState({})
+
+  const [notifications, setNotifications] = useState([])
+  const fetchNotifications = async () => {
+    // let id = ''
+    // if (user?.role === 'student') id = user?.teacherId
+    // if (user?.role === 'teacher') id = user?._id
+    // const response = await getNotifications(id)
+    // if (response) {
+    //   setNotifications(response)
+    // }
   }
-  const handleClickOptionSearch = (event) => {
-    setAnchorEl(event.currentTarget)
+  const fetchUser = async () => {
+    if (userLocal.role === 'student') {
+      const userFetch = await getStudentById(userLocal?._id)
+      setUser(userFetch)
+    }
+    else {
+      setUser(userLocal)
+    }
   }
-  const handleCloseOptionSearch = (option) => {
-    setSelectedOption(option)
-    setAnchorEl(null)
-  }
+  useEffect(() => {
+    fetchUser()
+    fetchNotifications()
+  }, [])
   return (
     <Box sx={{
       position: 'sticky',
@@ -69,58 +74,12 @@ const Header = ({ toggleNav, widthNav }) => {
         }
       }}>
 
-        {/* <Paper
-          sx={{
-            p: '2px 4px', display: 'flex', alignItems: 'center', width: {
-              sm: '100%',
-
-              lg: 600
-            }
-          }}
-        >
-          <Button
-            color='text.primary'
-            onClick={handleClickOptionSearch}
-            endIcon={<KeyboardArrowDownIcon />}>
-            {selectedOption}
-          </Button>
-          <Menu
-            anchorEl={anchorEl}
-            open={anchorEl}
-            onClose={() => setAnchorEl(null)}
-          >
-            <MenuItem onClick={() => handleCloseOptionSearch('SinhVien')}>SinhVien</MenuItem>
-            <MenuItem onClick={() => handleCloseOptionSearch('LopHoc')}>LopHoc</MenuItem>
-          </Menu>
-          <InputBase
-            ref={refSearch}
-            value={key}
-            onChange={(e) => setKey(e.target.value)}
-            sx={{
-              ml: 1, flex: 1
-            }}
-            placeholder='Tìm kiếm...'
-
-          />
-
-          <IconButton
-            onClick={() => setKey('')}
-            color='error'
-            sx={{ display: key ? 'flex' : 'none' }}
-          >
-            <CloseIcon />
-          </IconButton>
-
-          <Button variant='contained' color='primary' onClick={handleSearch}>Tìm kiếm</Button>
-
-        </Paper> */}
-
         <Box sx={{
           display: 'flex', justifyContent: 'flex-end', alignItems: 'center'
         }}>
           <ThemeMode />
           <IconButton color='success'>
-            <Badge badgeContent={1} color='error'>
+            <Badge badgeContent={notifications.length} color='error'>
               <NotificationsNoneIcon sx={{ color: 'text.default' }} />
             </Badge>
           </IconButton>

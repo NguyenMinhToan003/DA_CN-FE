@@ -8,12 +8,13 @@ import Login from '~/pages/auth/Login'
 import CreateResource from '~/pages/resources/Resource'
 import Topic from '~/pages/topic'
 import Register from '~/pages/auth/register'
+// import { getStudentById } from '~/apis/studentAPI'
 const AppRouter = () => {
-  const navigate = useNavigate()
-  const user = JSON.parse(localStorage.getItem('user'))
-  if (user === null) {
-    navigate('/login')
-  }
+  // const navigate = useNavigate()
+  // const user = JSON.parse(localStorage.getItem('user'))
+  // if (user === null) {
+  //   navigate('/login')
+  // }
 
 
   return (

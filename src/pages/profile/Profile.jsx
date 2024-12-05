@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react'
 
 const Profile = () => {
   const user = JSON.parse(localStorage.getItem('user'))
+  console.log(user)
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [classs, setClass] = useState('')
@@ -17,13 +18,13 @@ const Profile = () => {
   const fetchProfile = () => {
     setName(user?.name)
     setEmail(user?.email)
-    setClass(user?.class)
-    setMssv(user?.mssv)
+    setClass(user?.CLASS)
+    setMssv(user?.studentCode)
     setAvatar(user?.avatar)
   }
   useEffect(() => {
-    fetchProfile
-  })
+    fetchProfile()
+  }, [])
   return (
     <>
       <Container maxWidth='xl' sx={{

@@ -13,7 +13,7 @@ import { toast } from 'react-toastify'
 import HighlightOffIcon from '@mui/icons-material/HighlightOff'
 import { uploadResource } from '~/apis/resourceAPI'
 import { useParams } from 'react-router-dom'
-import AutorenewIcon from '@mui/icons-material/Autorenew'
+import CircularProgress from '@mui/material/CircularProgress'
 
 const UploadResource = ({ open, onClose, setIsChange }) => {
   const param = useParams()
@@ -57,6 +57,16 @@ const UploadResource = ({ open, onClose, setIsChange }) => {
       toast.error('Điền đầy đủ thông tin và upload media.')
       return
     }
+
+    // Kiểm tra các tệp đã được tải lên có hợp lệ không
+    const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf']
+    const invalidFiles = mediaUpload.filter(file => !allowedTypes.includes(file.type))
+
+    if (invalidFiles.length > 0) {
+      toast.error('Chỉ hỗ trợ tải lên hình ảnh hoặc tệp PDF!')
+      return
+    }
+
     try {
       setLoading(true)
       const data = new FormData()
@@ -65,13 +75,16 @@ const UploadResource = ({ open, onClose, setIsChange }) => {
       data.append('topicId', topicId)
       data.append('studentId', profile._id)
       mediaUpload.forEach((file) => data.append('file', file))
+
       const response = await uploadResource(data)
+
       if (response.acknowledged) {
         toast.success(response.message)
         setIsChange(true)
       } else {
         toast.error(response.message)
       }
+
       handleClearInput()
       onClose()
     }
@@ -81,12 +94,12 @@ const UploadResource = ({ open, onClose, setIsChange }) => {
     finally {
       setLoading(false)
     }
-
   }
+
   return <>
     {
       open && (
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'fixed', top: 0, left: 0, right: 0, height: '100%', zIndex: 100, p: 3, backgroundColor: '#00000050' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'fixed', top: 0, left: 0, right: 0, height: '100%', zIndex: 1000, p: 3, backgroundColor: '#00000050' }}>
           <Container
             maxWidth="md"
             sx={{
@@ -177,7 +190,10 @@ const UploadResource = ({ open, onClose, setIsChange }) => {
                           style={{
                             width: '150px',
                             height: '150px',
-                            objectFit: 'cover'
+                            objectFit: 'cover',
+                            borderRadius: 1,
+                            cursor: 'pointer',
+                            border: '1px solid #ccc'
                           }}
                         />
                         <IconButton
@@ -203,7 +219,7 @@ const UploadResource = ({ open, onClose, setIsChange }) => {
             </Box>
 
             <Button
-              startIcon={loading ? <AutorenewIcon /> : <CheckCircleOutlineIcon />}
+              startIcon={loading ? <CircularProgress /> : <CheckCircleOutlineIcon />}
               sx={{ mt: 3, width: '100%', p: 2, color: 'third.main', fontWeight: 'bold' }}
               variant="contained"
               color="success"

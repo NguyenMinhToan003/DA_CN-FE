@@ -183,7 +183,7 @@ const Register = () => {
           }}
           sx={{ fontSize: 10 }}
         />
-        <Button variant='contained' color='success' fullWidth
+        {/* <Button variant='contained' color='success' fullWidth
           sx={{
             mt: 2, p: 1.5, fontWeight: 'bold',
             fontSize: 14
@@ -193,7 +193,7 @@ const Register = () => {
           startIcon={loading && <CircularProgress size={20} color='inherit' />}
         >
           GIÁO VIÊN
-        </Button>
+        </Button> */}
         <Button variant='contained' fullWidth
           sx={{
             mt: 2, p: 1.5, fontWeight: 'bold',
