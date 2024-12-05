@@ -17,10 +17,12 @@ import Button from '@mui/material/Button'
 import UploadResource from '~/components/popup/UploadResource'
 import { getDsResource } from '~/apis/resourceAPI'
 import { useConfirm } from 'material-ui-confirm'
+import AddIcon from '@mui/icons-material/Add'
 
 const Topic = () => {
   const { id } = useParams()
   const confirm = useConfirm()
+  const [loading, setLoading] = useState(false)
   const [isChange, setIsChange] = useState(false)
   const [openUploadResource, setOpenUploadResource] = useState(false)
   const [topic, setTopic] = useState({
@@ -45,8 +47,12 @@ const Topic = () => {
     setStudents(response.students)
   }
   const fetchResources = async () => {
+    setLoading(true)
     const response = await getDsResource(id)
-    setResources(response)
+    if (response) {
+      setResources(response)
+      setLoading(false)
+    }
   }
   useEffect(() => {
     fetchTopic()
@@ -54,6 +60,7 @@ const Topic = () => {
   }, [])
   useEffect(() => {
     fetchResources()
+    setIsChange(false)
   }, [isChange])
   const handleClickImage = (url) => {
     confirm({
@@ -172,7 +179,9 @@ const Topic = () => {
               <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
                 Resource
               </Typography>
-              <Button variant="contained" color="primary" onClick={() => setOpenUploadResource(true)}>
+              <Button
+                startIcon={<AddIcon />}
+                variant="contained" color="primary" onClick={() => setOpenUploadResource(true)}>
                 Thêm mới
               </Button>
             </Box>
@@ -183,28 +192,47 @@ const Topic = () => {
                   <TableCell sx={{ width: 10 }}>STT</TableCell>
                   <TableCell sx={{ width: 200 }}>Tiêu đề</TableCell>
                   <TableCell sx={{ width: 'auto' }}>Nội dung</TableCell>
-                  <TableCell sx={{ width: 600 }}>Link</TableCell>
+                  <TableCell sx={{ width: 600 }}>Resource</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {
-                  resources.map((resource, index) => (
-                    <TableRow key={resource._id}>
-                      <TableCell>{index + 1}</TableCell>
-                      <TableCell>{resource.name}</TableCell>
-                      <TableCell>{resource.description}</TableCell>
-                      <TableCell>
-                        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                          {
-                            resource.url.map((url, index) => (
-                              <img key={index} src={url} alt="media" style={{ width: 100, height: 100, objectFit: 'cover', cursor: 'pointer' }}
-                                onClick={() => handleClickImage(url)} />
-                            ))
-                          }
-                        </Box>
+                  resources.length > 0 ?
+                    <>{
+                      resources.map((resource, index) => (
+                        <TableRow key={resource._id}>
+                          <TableCell>{index + 1}</TableCell>
+                          <TableCell>{resource.name}</TableCell>
+                          <TableCell>{resource.description}</TableCell>
+                          <TableCell>
+                            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                              {
+                                resource.url.length > 0
+                                  ? <>
+                                    {
+                                      resource.url.map((url, index) => (
+                                        <img key={index} src={url} alt="media" style={{ width: 100, height: 100, objectFit: 'cover', cursor: 'pointer', border: '1px solid #ccc' }}
+                                          onClick={() => handleClickImage(url)} />
+                                      ))
+                                    }
+                                  </>
+                                  : ''
+                              }
+                            </Box>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    }
+                    </>
+                    : <TableRow>
+                      <TableCell colSpan={4} align='center'>
+                        {
+                          loading === true
+                            ? <Typography textAlign='center' color='info' fontWeight='bold'>Loading..</Typography>
+                            : <Typography textAlign='center' color='error' fontWeight='bold'>Empty</Typography>
+                        }
                       </TableCell>
                     </TableRow>
-                  ))
                 }
               </TableBody>
             </Table>

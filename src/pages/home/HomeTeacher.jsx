@@ -90,17 +90,24 @@ const HomeTeacher = () => {
     setLoadingAction(true)
     const studentIds = studentListChecked.map(student => student._id)
     const response = await confirmStudents(user._id, studentIds)
-    if (response?.acknowledged > 0) {
-      fetchStudentList()
-      setStudentListChecked([])
-      if (response?.modifiedCount > 0) {
-        toast.success(`${response?.modifiedCount} sinh viên đã được xác nhận`)
-      }
-      else {
-        toast.warning('Chưa có thay đổi')
-      }
-    }
-    setLoadingAction(false)
+      .then((response) => {
+        if (response?.acknowledged > 0) {
+          fetchStudentList()
+          setStudentListChecked([])
+          if (response?.modifiedCount > 0) {
+            toast.success(`${response?.modifiedCount} sinh viên đã được xác nhận`)
+          }
+          else {
+            toast.warning('Chưa có thay đổi')
+          }
+        }
+      })
+      .catch(() => {
+        toast.error(response?.message)
+      })
+      .finally(() => {
+        setLoadingAction(false)
+      })
   }
   const handlerConfimTopics = async () => {
     setLoadingAction(true)
@@ -120,7 +127,7 @@ const HomeTeacher = () => {
           }
         }
       })
-      .catch(() => {
+      .catch((response) => {
         toast.error(response?.message)
       })
       .finally(() => {
@@ -224,7 +231,8 @@ const HomeTeacher = () => {
                 </Typography>
                 <Button disabled={loadingAction} variant='contained' onClick={handlerComfimStudents} color='success'>Nhận sinh viên</Button>
                 <Button disabled={loadingAction} variant='contained' onClick={handleJoinTopic}>Nhóm</Button>
-                <Button disabled={loadingAction} variant='contained' onClick={handlerConfimTopics} color='warning'>Xác nhận Đề tài</Button>
+                <Button disabled={loadingAction || studentListChecked.length > 1} variant='contained'
+                  onClick={handlerConfimTopics} color='warning'>Xác nhận Đề tài</Button>
                 <Button
                   disabled={loadingAction}
                   variant='contained'
@@ -261,20 +269,18 @@ const HomeTeacher = () => {
               onClose={handleClose}
               open={open}
             >
-              {
-                listFilter.map((filter, index) => {
-                  if (index === iFilter) return ''
-                  return <>
-                    <MenuItem
-                      key={index}
-                      onClick={() => handlFilter(index, filter.status, filter.process, filter.topic)}
-                    >
-                      {filter.name}
-                    </MenuItem>
-                  </>
-                })
-              }
+              {listFilter.map((filter, index) =>
+                index !== iFilter && (
+                  <MenuItem
+                    key={index}
+                    onClick={() => handlFilter(index, filter.status, filter.process, filter.topic)}
+                  >
+                    {filter.name}
+                  </MenuItem>
+                )
+              )}
             </Menu>
+
 
             <TextField variant='standard' size='small' placeholder='Tìm kiếm' value={searchStudent}
               onChange={(e) => handleSearchStudent(e.target.value)}
